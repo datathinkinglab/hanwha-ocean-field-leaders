@@ -1099,7 +1099,8 @@
       <div class="padlet-wrap">
         <div class="padlet-form">
           <input type="text" class="padlet-input" id="padletInput" placeholder="예: 교대 일지 중복 작성, 공구 위치 찾기, 외국인 소통 (입력 후 등록 클릭)" onkeypress="handlePadletEnter(event)">
-          <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 16px; padding: 12px 20px;" onclick="addPadletCard()">의견 등록하기</button>
+            <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 16px; padding: 12px 20px;" onclick="addPadletCard()">의견 등록하기</button>
+            <button type="button" class="btn-action" style="white-space: nowrap;" onclick="resetPadletHearts()" title="모든 의견의 하트 수를 0으로 초기화">하트 초기화</button>
         </div>
         <div class="padlet-board" id="padletBoard">
           <div class="padlet-card" id="card-default-1">
@@ -1534,6 +1535,14 @@
           fireToast('의견이 삭제되었습니다.');
         }, 200);
       }
+    }
+
+    function resetPadletHearts() {
+      document.querySelectorAll('#padletBoard .padlet-heart').forEach((btn) => {
+        btn.textContent = '❤️ 0';
+        btn.style.transform = 'scale(1)';
+      });
+      fireToast('모든 의견의 하트 수를 0으로 초기화했습니다.');
     }
 
     function likeCard(btn) {

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI와 함께 일하는 현장 | 한화오션 현장책임자 특강</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg-base: #060b14;
+      --bg-surface: #0e1726;
+      --bg-card: rgba(18, 29, 47, 0.9);
+      --border: rgba(255, 255, 255, 0.15);
+      --border-focus: #ff6b35;
+      --text-main: #f0f4f8;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
+      --brand-orange: #ff6b35;
+      --brand-cyan: #00e5ff;
+      --brand-blue: #1d72b8;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* 상단 헤더 */
+    .app-header {
+      height: 64px;
+      padding: 0 32px;
+      background: rgba(10, 17, 30, 0.98);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .brand-badge {
+      background: var(--brand-orange);
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 800;
+    }
+    .header-nav { display: flex; gap: 8px; }
+    .nav-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+    .nav-tab.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--brand-cyan);
+      color: var(--brand-cyan);
+    }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-action {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .btn-print {
+      background: linear-gradient(135deg, var(--brand-orange), #e0531c);
+      border: none;
+      box-shadow: 0 2px 12px rgba(255, 107, 53, 0.4);
+    }
+
+    /* 진행 바 */
+    .progress-bar-container { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.06); position: relative; }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand-cyan), var(--brand-orange));
+      width: 4.5%;
+      transition: width 0.3s ease;
+    }
+
+    /* 뷰포트 & 슬라이드 레이아웃 */
+    .viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      padding: 24px max(40px, calc((100vw - 1500px) / 2));
+      display: flex;
+      flex-direction: column;
+    }
+    .slide-page {
+      position: absolute;
+      inset: 20px max(40px, calc((100vw - 1500px) / 2));
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    .slide-page.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* 슬라이드 타이포그래피 (폰트 크기 대폭 상향) */
+    .slide-eyebrow {
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: var(--brand-cyan);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .slide-title {
+      font-size: clamp(30px, 2.6vw, 42px);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.25;
+      margin-bottom: 18px;
+      color: #fff;
+    }
+    .slide-title em { font-style: normal; color: var(--brand-orange); }
+
+    /* 레이아웃 그리드 */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; align-items: stretch; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; }
+    
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .card-highlight {
+      border-color: rgba(0, 229, 255, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 229, 255, 0.12);
+    }
+    .card h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; color: #fff; line-height: 1.35; }
+    .card p { font-size: 16.5px; color: var(--text-sub); line-height: 1.6; }
+
+    /* 미디어 & 이미지 컨테이너 */
+    .media-box {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+      flex: 1;
+      min-height: 190px;
+    }
+    .media-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .media-box.contain-img img {
+      object-fit: contain;
+      background: #0b1320;
+    }
+    .media-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+    }
+    .video-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 250px;
+      border: 0;
+    }
+
+    /* 히어로 배경 슬라이드 */
+    .hero-bg {
+      background-image: linear-gradient(90deg, rgba(6,11,20,0.96) 0%, rgba(6,11,20,0.85) 55%, rgba(6,11,20,0.45) 100%), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      border-radius: 14px;
+      padding: 44px !important;
+    }
+    .hero-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 960px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 107, 53, 0.22);
+      border: 1px solid rgba(255, 107, 53, 0.5);
+      color: var(--brand-orange);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 22px;
+      align-self: flex-start;
+    }
+    .hero-h1 {
+      font-size: clamp(38px, 4.2vw, 62px);
+      font-weight: 900;
+      line-height: 1.22;
+      letter-spacing: -0.04em;
+      margin-bottom: 22px;
+    }
+    .hero-lead { font-size: 21px; line-height: 1.65; color: #cbd5e1; margin-bottom: 32px; }
+
+    /* 인터랙티브 요소들 (폰트 & 터치 타겟 상향) */
+    .poll-list { display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: center; }
+    .poll-item-row {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .poll-item-row:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3); }
+    .poll-item-row.voted { border-color: var(--brand-cyan); background: rgba(0, 229, 255, 0.1); }
+    .poll-fill-bar {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      background: rgba(0, 229, 255, 0.18); width: 0%;
+      transition: width 0.6s ease; z-index: 1;
+    }
+    .poll-idx-badge {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 15px; color: var(--brand-cyan); z-index: 2;
+    }
+    .poll-label-txt { font-size: 17px; font-weight: 700; text-align: left; flex: 1; color: #fff; z-index: 2; line-height: 1.45; }
+    .poll-score-txt { font-size: 16px; font-weight: 800; color: var(--brand-cyan); z-index: 2; min-width: 90px; text-align: right; }
+
+    .ox-container { display: flex; gap: 24px; margin: 18px 0; }
+    .ox-card {
+      flex: 1; padding: 26px; border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--border); text-align: center;
+      cursor: pointer; font-size: 46px; font-weight: 900; transition: all 0.2s;
+    }
+    .ox-card.o-btn:hover { border-color: var(--brand-cyan); color: var(--brand-cyan); }
+    .ox-card.x-btn:hover { border-color: var(--brand-orange); color: var(--brand-orange); }
+    .ox-answer-box {
+      padding: 20px 24px; border-radius: 12px;
+      background: rgba(0, 229, 255, 0.1); border-left: 5px solid var(--brand-cyan);
+      font-size: 17.5px; line-height: 1.65; display: none; margin-top: 14px;
+    }
+
+    .timer-wrap { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; }
+    .timer-digit { font-size: 34px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--brand-orange); }
+    .board-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 16px; }
+    .board-chip {
+      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border);
+      padding: 12px 6px; border-radius: 6px; text-align: center;
+      font-size: 17px; font-weight: 800; color: #a5b4fc; cursor: pointer;
+    }
+    .board-chip.target-chip.found {
+      background: var(--brand-orange) !important; color: #fff !important; font-weight: 900; transform: scale(1.08);
+    }
+
+    /* 13페이지 시뮬레이터 인터랙션 버튼 */
+    .sim-hazard-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    /* 19페이지 패들렛 */
+    .padlet-wrap { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+    .padlet-form { display: flex; gap: 12px; }
+    .padlet-input {
+      flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 18px; color: #fff; font-size: 16px; outline: none;
+    }
+    .padlet-board {
+      flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; overflow-y: auto; padding-right: 4px;
+    }
+    .padlet-card {
+      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border);
+      border-left: 5px solid var(--brand-orange); border-radius: 10px; padding: 16px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
+    }
+    .padlet-card.highlight-blue { border-left-color: var(--brand-cyan); }
+    .padlet-card.highlight-green { border-left-color: var(--success); }
+    .padlet-card p { font-size: 15.5px; line-height: 1.55; color: #f1f5f9; }
+    .padlet-card small { color: var(--text-muted); font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+    .padlet-heart {
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ff6b35; cursor: pointer; padding: 4px 10px; border-radius: 20px; font-weight: 700;
+    }
+
+    /* 하단 푸터 */
+    .app-footer {
+      height: 54px; padding: 0 32px;
+      background: rgba(8, 14, 24, 0.98); border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; z-index: 50;
+    }
+    .page-indicator { font-size: 15px; font-weight: 800; color: var(--text-muted); }
+    .page-indicator strong { color: #fff; }
+    .copyright-text { font-size: 13.5px; color: #94a3b8; font-weight: 600; letter-spacing: -0.01em; }
+    .footer-nav { display: flex; align-items: center; gap: 10px; }
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border);
+      color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 14px;
+      font-weight: 700; cursor: pointer;
+    }
+    .btn-nav:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
+    .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* 모달 */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px); z-index: 100; display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      width: min(880px, 94vw); max-height: 82vh; background: var(--bg-surface);
+      border: 1px solid var(--border); border-radius: 14px; padding: 28px;
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; overflow-y: auto; max-height: 62vh; }
+    .toc-item {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border);
+      padding: 12px 16px; border-radius: 8px; color: #cbd5e1; font-size: 14.5px;
+      cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600;
+    }
+    .toc-item:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--brand-cyan); color: #fff; }
+
+    .toast-msg {
+      position: fixed; top: 80px; right: 32px; background: rgba(14, 23, 38, 0.96);
+      border: 1px solid var(--brand-cyan); color: #fff; padding: 14px 22px;
+      border-radius: 8px; font-size: 15px; font-weight: 700; z-index: 200; display: none;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    /* PDF 출력 (16:9 비율 유지) */
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      body { background-color: #060b14 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: auto !important; overflow: visible !important; }
+      .app-header, .app-footer, .progress-bar-container, .modal-overlay, .toast-msg, .padlet-form, .btn-action { display: none !important; }
+      .viewport { padding: 0 !important; height: auto !important; overflow: visible !important; display: block !important; }
+      .slide-page {
+        position: relative !important; inset: auto !important; width: 16in !important; height: 9in !important;
+        padding: 0.6in 0.8in !important; page-break-after: always !important; break-after: page !important;
+        opacity: 1 !important; display: flex !important; transform: none !important; background-color: #060b14 !important;
+      }
+      .ox-answer-box { display: block !important; }
+      .poll-fill-bar { width: 45% !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="app-header">
+    <div class="brand-logo">
+      <span>HANWHA OCEAN</span>
+      <span class="brand-badge">현장책임자 AX 특강</span>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-tab active" onclick="jumpToModule(0)">1. 트렌드와 변화</button>
+      <button class="nav-tab" onclick="jumpToModule(1)">2. 글로벌 제조 AI</button>
+      <button class="nav-tab" onclick="jumpToModule(2)">3. 현장 적용과 맹점</button>
+      <button class="nav-tab" onclick="jumpToModule(3)">4. 리더십과 상생</button>
+    </nav>
+    <div class="header-actions">
+      <button class="btn-action" onclick="toggleModal()">전체 목차</button>
+      <button class="btn-action btn-print" onclick="window.print()">PDF 출력</button>
+    </div>
+  </header>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- 슬라이드 뷰포트 -->
+  <main class="viewport" id="viewport">
+
+    <!-- Slide 01: Hero -->
+    <section class="slide-page hero-bg active" data-mod="0">
+      <div class="hero-wrap">
+        <div class="hero-badge">HANWHA OCEAN · FIELD LEADERSHIP</div>
+        <h1 class="hero-h1">기술을 외우는 시간보다,<br><em style="color: var(--brand-cyan);">우리 일의 변화를 보는 시간</em></h1>
+        <p class="hero-lead">인공지능이 전 세계 공장을 어떻게 바꾸고 있으며, 현장 책임자의 30년 숙련과 손끝 감각은 기술과 결합하여 어떻게 더 안전한 스마트야드를 만드는가?</p>
+        <div>
+          <button class="btn-action" style="padding: 14px 28px; font-size: 16px; background: var(--brand-orange); border: none;" onclick="nextSlide()">특강 시작하기 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 02: 실시간 공감 투표 (구글 시트/폼 연동 대응) -->
+    <section class="slide-page" data-mod="0">
+      <div class="slide-eyebrow">MODULE 1 · REAL-TIME FIELD POLL</div>
+      <h2 class="slide-title">오늘 내 업무에서 <em>가장 덜어내고 싶은 수고</em>는?</h2>
+      <div class="grid-2">
+        <div class="poll-list" id="pollList">
+          <div class="poll-item-row" onclick="castVote(this, 0)">
+            <div class="poll-fill-bar" id="bar-0" style="width: 42%;"></div>
+            <span class="poll-idx-badge">1</span>
+            <span class="poll-label-txt">매일 교대 때마다 작업일지·안전체크 수기 작성 및 중복 정리</span>
+            <strong class="poll-score-txt" id="score-0">31표 (42%)</strong>
+          </div>
+          <div class="poll-item-row" onclick="castVote(this, 1)">
+            <div class="poll-fill-bar" id="bar-1" style="width: 29%;"></div>
+            <span class="poll-idx-badge">2</span>
+            <span class="poll-label-txt">도면 변경점 확인이나 장비 매뉴얼에서 에러코드 찾느라 헤매기</span>
+            <strong class="poll-score-txt" id="score-1">21표 (29%)</strong>
+          </div>
+          <div class="poll-item-row" onclick="castVote(this, 2)">
+            <div class="poll-fill-bar" id="bar-2" style="width: 17%;"></div>
+            <span class="poll-idx-badge">3</span>
+            <span class="poll-label-txt">신규 작업자나 외국인 근로자에게 같은 작업·안전 지시 반복 설명</span>
+            <strong class="poll-score-txt" id="score-2">13표 (17%)</strong>
+          </div>
+          <div class="poll-item-row" onclick="castVote(this, 3)">
+            <div class="poll-fill-bar" id="bar-3" style="width: 12%;"></div>
+            <span class="poll-idx-badge">4</span>
+            <span class="poll-label-txt">용접 결함, 부품 단차, 라벨 오타 놓칠까 봐 눈 아프게 대조하기</span>
+            <strong class="poll-score-txt" id="score-3">9표 (12%)</strong>
+          </div>
+          
+          <!-- 실시간 집계 컨트롤 바 (Slido / Google Sheet / 현장 거수 하이브리드 지원) -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13.5px; color: var(--brand-cyan); font-weight: 700;" id="pollStatusText">● 실시간 집계 활성화</span>
+              <button class="btn-action" style="padding: 4px 10px; font-size: 12px; background: rgba(0,229,255,0.15); color: var(--brand-cyan); border-color: var(--brand-cyan);" onclick="openSlidoModal()">Slido / QR 열기</button>
+            </div>
+            <span style="font-size: 13.5px; color: #cbd5e1; font-weight: 700;" id="totalVotersText">참여 인원: 74명</span>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <!-- 오프닝 영상: 글로벌 제조업 AI 대전환 (NVIDIA & Siemens Industrial AI) -->
+          <div class="media-box" id="openingVideoContainer">
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="글로벌 제조 AI 전환">
+            <div style="position: absolute; inset: 0; background: rgba(6,11,20,0.6); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 16px; padding: 14px 22px;" onclick="mountVideo(this, 'ktM9biZ8Azg', 'openingVideoContainer')">
+                ▶ 오프닝 영상 재생 (글로벌 제조 AI 대전환)
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>차세대 산업 AI 혁신 (NVIDIA & Siemens)</span>
+              <a href="https://www.youtube.com/watch?v=ktM9biZ8Azg" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="font-size: 16.5px; margin-top: 14px; line-height: 1.6;">
+            "AI 도입의 본질은 사람을 바꾸는 것이 아니라, <strong>현장 책임자가 겪는 지루한 확인과 기록 피로를 덜어내는 것</strong>입니다."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 03: 거시 자본 트렌드 (내용 일치 실사) -->
+    <section class="slide-page" data-mod="0">
+      <div class="slide-eyebrow">MODULE 1 · MACRO TREND</div>
+      <h2 class="slide-title">돈은 거짓말을 하지 않는다 : <em>글로벌 자본의 대이동</em></h2>
+      <div class="grid-3">
+        <div class="card">
+          <div style="font-size: 32px; font-weight: 900; color: var(--brand-cyan); margin-bottom: 6px;">6,000조 원+</div>
+          <h3>글로벌 빅테크 설비 투자</h3>
+          <p>엔비디아, MS, 아마존이 AI 인프라와 산업 데이터센터에 쏟아붓는 금액은 단일 국가 예산을 초과합니다.</p>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80" alt="초거대 AI 서버 데이터센터">
+            <div class="media-caption"><span>AI 전용 하이퍼스케일 데이터센터</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 32px; font-weight: 900; color: var(--brand-orange); margin-bottom: 6px;">KOSPI 시총 추월</div>
+          <h3>엔비디아 1개사 기업 가치</h3>
+          <p>단일 반도체 하드웨어 기업의 가치가 대한민국 유가증권시장 전체 시총을 훌쩍 넘어서며 경제 축이 재편되었습니다.</p>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="최첨단 AI 가속기 반도체">
+            <div class="media-caption"><span>엔비디아 차세대 AI 칩셋 아키텍처</span></div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <div style="font-size: 32px; font-weight: 900; color: var(--success); margin-bottom: 6px;">실물 제조 현장</div>
+          <h3>화면을 벗어나 공장으로</h3>
+          <p>단순 글짓기 챗봇을 넘어, <strong>철판을 자르고 블록을 용접하는 피지컬 AI와 지능형 로봇</strong>으로 자본이 집결합니다.</p>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" alt="정밀 자동화 로봇 제조 라인">
+            <div class="media-caption"><span>제조업 현장으로 확장되는 피지컬 AI</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 04: 터미네이터 vs 벽면 등반 용접 로봇 (영상 중복 완전 해결) -->
+    <section class="slide-page" data-mod="0">
+      <div class="slide-eyebrow">MODULE 1 · ROBOT & HUMAN SAFETY</div>
+      <h2 class="slide-title">영화 속 <em>터미네이터</em> vs 현실의 <em>벽면 등반 용접 로봇</em></h2>
+      <div class="grid-2">
+        <div class="card" style="border-color: rgba(239, 68, 68, 0.4);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="color: var(--danger); font-weight: 800; font-size: 14px;">CINEMA · 상상 속의 위협</span>
+            <span style="font-size: 13px; color: var(--text-muted);">영화 &lt;터미네이터 2&gt;</span>
+          </div>
+          <h3 style="font-size: 21px;">"인간을 밀어내고 위협하는 기계?"</h3>
+          
+          <div class="media-box" id="t2VideoContainer" style="min-height: 220px;">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" alt="영화 터미네이터 비주얼">
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: rgba(239,68,68,0.9); border: none; font-size: 15px;" onclick="mountVideo(this, 'lwSysg9o7wE', 't2VideoContainer')">
+                ▶ 터미네이터 공식 영상 재생
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>SF 미디어가 심어준 기계에 대한 막연한 두려움</span>
+              <a href="https://www.youtube.com/watch?v=lwSysg9o7wE" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">미디어는 종종 기계가 사람을 지배하는 공포를 그립니다. 하지만 실제 조선소 현장에서 로봇이 투입되는 목적은 정반대입니다.</p>
+        </div>
+
+        <div class="card card-highlight">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="color: var(--success); font-weight: 800; font-size: 14px;">REALITY · 현장의 수호자</span>
+            <span style="font-size: 13px; color: var(--brand-cyan);">벽면 등반 용접 로봇</span>
+          </div>
+          <h3 style="font-size: 21px; color: var(--brand-cyan);">유독가스 밀폐 구역 &amp; 고소 비계 작업 대체</h3>
+          
+          <div class="media-box" id="climbRobotContainer" style="min-height: 220px;">
+            <img src="https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80" alt="조선소 벽면 등반 로봇">
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: var(--brand-cyan); color: #050a14; border: none; font-size: 15px; font-weight: 800;" onclick="mountVideo(this, 'EdgTEWDpcdQ', 'climbRobotContainer')">
+                ▶ 벽타고 용접하는 조선소 로봇 재생
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>수직 벽면 등반 및 협소 구역 자율 용접 로봇 시연</span>
+              <a href="https://www.youtube.com/watch?v=EdgTEWDpcdQ" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">
+            밀폐 구역의 <strong>유독가스 질식 위험</strong>, 수십 미터 <strong>높은 비계의 추락 위험</strong> 구역에 로봇이 대신 들어가고, <strong>사람은 안전한 관제 위치에서 조율</strong>합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 05: 일상 속 체감 AI (동영상 삽입) -->
+    <section class="slide-page" data-mod="0">
+      <div class="slide-eyebrow">MODULE 1 · EVERYDAY REALITY</div>
+      <h2 class="slide-title">이미 우리 <em>주머니 속으로 들어온 AI</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="media-box" id="translateVideoContainer" style="min-height: 240px;">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" alt="스마트폰 실시간 통역">
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 15px;" onclick="mountVideo(this, 'pjO51vbbCRY', 'translateVideoContainer')">
+                ▶ 실시간 통화/대화 통역 시연 재생
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>온디바이스 AI 실시간 통역 (Source: Samsung Galaxy AI)</span>
+              <a href="https://www.youtube.com/watch?v=pjO51vbbCRY" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16.5px;">스마트폰 하나로 베트남·우즈베크 근로자와 모국어로 안전 수칙을 즉시 주고받습니다.</p>
+        </div>
+
+        <div class="card card-highlight" style="justify-content: space-around;">
+          <div>
+            <h3 style="color: var(--brand-cyan); font-size: 22px;">1. 현장 안전수칙 음성 통역</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">"안전고리 반드시 2중 체결하세요"라고 한국어로 말하면, 상대방 무전기나 휴대폰에서 외국어로 즉각 음성 출력됩니다.</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+            <h3 style="color: var(--brand-orange); font-size: 22px;">2. 카메라 비전 부품 스캔</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">복잡한 배관 기호나 흐릿한 밸브 명판을 스마트폰 카메라로 비추면, 0.5초 만에 규격과 정비 매뉴얼 페이지를 요약해 띄웁니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 06: 로봇 vs AI OX 퀴즈 -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · INTERACTIVE QUIZ</div>
+      <h2 class="slide-title">생각해보기 : <em>로봇이 움직이면 다 AI일까요?</em></h2>
+      <div class="grid-2">
+        <div>
+          <p style="font-size: 18px; color: #cbd5e1; margin-bottom: 14px;">현장에서 일하는 로봇과 설비, 과연 어디서부터 인공지능일까요?</p>
+          <div class="ox-container">
+            <div class="ox-card o-btn" onclick="revealOxAnswer('O')">O</div>
+            <div class="ox-card x-btn" onclick="revealOxAnswer('X')">X</div>
+          </div>
+          <div class="ox-answer-box" id="oxAnswerBox">
+            <strong style="color: var(--brand-cyan); font-size: 20px;">정답은 X 입니다!</strong>
+            <p style="margin-top: 8px; font-size: 17px;">정해진 좌표대로만 기계적으로 반복 용접하는 것은 <strong>'일반 자동화(설비)'</strong>입니다.<br>
+            반면, 카메라로 철판의 휨을 감지하고 <strong>"어제와 무엇이 다르지? 각도를 2도 틀어야겠네"</strong>라고 스스로 판단하여 보정하는 것이 <strong>'AI'</strong>입니다.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="media-box" style="min-height: 250px;">
+            <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80" alt="정밀 로봇과 피지컬 AI">
+            <div class="media-caption"><span>단순 좌표 반복 로봇 vs 주변 환경을 인지·판단하는 지능형 로봇</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 07: BMW AIQX 비전 검사 (영상 탑재 및 설명 매칭) -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · GLOBAL LIGHTHOUSE</div>
+      <h2 class="slide-title">BMW 라이프치히 공장의 <em>AI 품질 검사 흐름</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="media-box" id="bmwVideoContainer" style="min-height: 240px;">
+            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="BMW AIQX 품질 검사">
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: var(--brand-cyan); color: #050a14; font-weight: 800; border: none; font-size: 15px;" onclick="mountVideo(this, 'VOxUPomBoqQ', 'bmwVideoContainer')">
+                ▶ BMW 공식 AIQX 검사 영상 재생
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>BMW iFACTORY AIQX - 컴퓨터 비전 품질 자동 검사 시스템</span>
+              <a href="https://www.youtube.com/watch?v=VOxUPomBoqQ" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">고속 카메라가 조립 라인을 스캔하여 도장 불량과 미세 단차를 1초 만에 찾아냅니다.</p>
+        </div>
+        <div class="card card-highlight" style="justify-content: space-around;">
+          <div>
+            <span style="color: var(--brand-cyan); font-weight: 800; font-size: 15px;">STEP 01</span>
+            <h3 style="margin-top: 4px; font-size: 21px;">초고속 센서·카메라 촬영</h3>
+            <p style="font-size: 16px;">차체 1대당 수백 장의 표면 사진을 다각도 조명 아래 캡처</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+            <span style="color: var(--brand-orange); font-weight: 800; font-size: 15px;">STEP 02</span>
+            <h3 style="margin-top: 4px; font-size: 21px;">비전 AI의 결함 후보 감지</h3>
+            <p style="font-size: 16px;">사람이 눈 아프게 찾던 미세 스크래치를 화면에 자동 바운딩 박스로 표시</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+            <span style="color: var(--success); font-weight: 800; font-size: 15px;">STEP 03 (핵심)</span>
+            <h3 style="margin-top: 4px; font-size: 21px;">베테랑 작업자의 최종 확인 및 조치</h3>
+            <p style="font-size: 16px;">AI가 짚어준 부위를 작업자가 직접 만져보고 원인 파악 및 라인 피드백</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 08: 10초 관찰 게임 (정밀 비전 바운딩 박스 복구) -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · OBSERVATION GAME</div>
+      <h2 class="slide-title">10초 챌린지 : <em>다른 부품 번호 하나를 찾아보세요</em></h2>
+      <div class="grid-2">
+        <div>
+          <div class="timer-wrap">
+            <button class="btn-action" onclick="startChallengeTimer()">10초 시작</button>
+            <div class="timer-digit" id="timerDigit">00:10</div>
+            <button class="btn-action" style="background: rgba(255,255,255,0.06);" onclick="revealOddChip()">정답 위치 보기</button>
+          </div>
+          <div class="board-grid">
+            <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div>
+            <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div>
+            <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip target-chip" id="oddChip" onclick="chipClicked()">A-3816</div><div class="board-chip">A-3861</div>
+            <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div>
+          </div>
+          <p style="color: var(--text-muted); font-size: 16px;">※ 사람은 피로해지면 숫자 하나 바뀐 것을 놓치기 쉽습니다. <strong>단순 대조 피로는 AI에게 넘겨야 합니다.</strong></p>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="media-box" style="min-height: 220px; position: relative;">
+            <img src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80" alt="정밀 비전 검사 이미지" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80';">
+            <!-- 바운딩 박스 오버레이 -->
+            <div style="position: absolute; top: 28%; left: 35%; width: 95px; height: 80px; border: 2px solid var(--brand-orange); border-radius: 4px; box-shadow: 0 0 12px rgba(255,107,53,0.85); pointer-events: none;">
+              <span style="position: absolute; top: -22px; left: 0; background: var(--brand-orange); color: #fff; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 3px;">결함 의심 98.4%</span>
+            </div>
+            <div class="media-caption">
+              <span>스마트 비전 AI의 자동 결함 바운딩 박스 검출 원리</span>
+            </div>
+          </div>
+          <p style="font-size: 16px; margin-top: 12px;">기계는 수만 번을 봐도 피로해지지 않습니다. 눈 아픈 단순 비교는 AI에게 맡기고, 사람은 문제 해결과 조치에 집중해야 합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 09: 설비 예지정비 (지멘스 & 슈나이더) -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · PREDICTIVE MAINTENANCE</div>
+      <h2 class="slide-title">설비가 멈추기 전에 알아채는 <em>예측 정비 AI</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="media-box" style="min-height: 200px;">
+            <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=800&q=80" alt="설비 진동 센서 측정">
+            <div class="media-caption"><span>진동·온도 IoT 센서의 실시간 파형 분석</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">모터 베어링이 마모될 때 생기는 미세한 초음파와 열 변화를 24시간 실시간 감지합니다.</p>
+        </div>
+        <div class="card card-highlight" style="justify-content: space-around;">
+          <div>
+            <h3 style="color: var(--danger); font-size: 21px;">과거의 사후 보전</h3>
+            <p style="font-size: 16px; line-height: 1.6;">"갑자기 라인 정지!" → 원인 모른 채 설비가 타버려 부품 수급까지 3일간 조업 중단</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+            <h3 style="color: var(--success); font-size: 21px;">AI 예측 정비</h3>
+            <p style="font-size: 16px; line-height: 1.6;">"고장 3주 전 사전 알람" → <strong>'2번 롤러 베어링 진동 패턴 이상. 다음 주 화요일 계획 정비 때 교체 권장'</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10: 동적 스케줄링 (복잡한 계산 해방) -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · DYNAMIC SCHEDULING</div>
+      <h2 class="slide-title">복잡한 공정 계산의 해방 : <em>동적 스케줄링 AI</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="media-box" style="min-height: 220px;">
+            <img src="https://images.unsplash.com/photo-1586528116493-a029325540fa?auto=format&fit=crop&w=800&q=80" alt="자동화 물류 및 스케줄링">
+            <div class="media-caption"><span>수만 가지 제약 조건을 실시간 계산하는 공정 AI</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">골리앗 크레인 동선, 블록 야드 점유 상태, 날씨 변화에 따른 최적 공정 시나리오를 초 단위로 연산합니다.</p>
+        </div>
+        <div class="card card-highlight" style="justify-content: space-around;">
+          <div>
+            <h3 style="color: var(--brand-orange); font-size: 22px;">리더의 역할 변화</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">하루 종일 엑셀 표와 일정표를 붙잡고 씨름하던 피로에서 벗어나, <strong>현장 돌발 예외 판단과 안전 승인에 전념</strong>합니다.</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+            <h3 style="color: var(--brand-cyan); font-size: 22px;">기술의 지원</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">"A안과 B안 중 현재 비가 올 확률과 잔여 인력을 고려할 때 가장 안전하고 빠른 경로를 추천합니다."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: 한화오션 스마트야드 (숙련의 데이터화) -->
+    <section class="slide-page" data-mod="1">
+      <div class="slide-eyebrow">MODULE 2 · HANWHA OCEAN SMART YARD</div>
+      <h2 class="slide-title">한화오션 스마트야드 : <em>숙련공의 손끝 기술이 데이터로</em></h2>
+      <div class="grid-2">
+        <div class="card card-highlight">
+          <div class="media-box" id="yardWeldingContainer" style="min-height: 220px;">
+            <img src="https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80" alt="한화오션 용접 현장">
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 15px;" onclick="mountVideo(this, '8Nc2cji3ve8', 'yardWeldingContainer')">
+                ▶ 한화오션 공식 용접 로봇 영상 보기
+              </button>
+            </div>
+            <div class="media-caption">
+              <span>한화오션 거제조선소 선박 블록 용접 협동로봇 공식 시연</span>
+              <a href="https://www.youtube.com/watch?v=8Nc2cji3ve8" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
+            </div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">베테랑 용접사의 전류·전압 조절과 위빙(Weaving) 궤적이 로봇의 두뇌로 복제됩니다.</p>
+        </div>
+        <div class="card" style="justify-content: center;">
+          <h3 style="color: var(--brand-cyan); font-size: 24px;">노하우의 보존과 세대 전수</h3>
+          <p style="font-size: 17px; line-height: 1.7; margin-top: 10px;">
+            "AI는 반장님들을 밀어내는 것이 아니라, <strong>수십 년간 쌓아 올린 손끝 감각을 회사의 자산으로 기록하고 후배들에게 온전히 전수하는 통로</strong>입니다."
+          </p>
+          <div style="background: rgba(0, 229, 255, 0.08); border-left: 4px solid var(--brand-cyan); padding: 14px; margin-top: 18px; border-radius: 6px;">
+            <strong style="color: #fff; font-size: 16px;">상생의 약속:</strong>
+            <p style="font-size: 15px; margin-top: 6px; color: #cbd5e1;">단순 반복적이고 척추를 상하게 만드는 중노동은 로봇이 맡고, 최종 검수와 노하우 지휘는 반장님이 맡습니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12: 슈나이더 AR 정비 (두꺼운 매뉴얼 3초 검색) -->
+    <section class="slide-page" data-mod="2">
+      <div class="slide-eyebrow">MODULE 3 · FIELD DEPLOYMENT</div>
+      <h2 class="slide-title">두꺼운 매뉴얼 대신 3초 검색 : <em>슈나이더 AR 정비 사례</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="media-box" style="min-height: 220px;">
+            <img src="https://images.unsplash.com/photo-1592478411213-6153e4ebc07d?auto=format&fit=crop&w=800&q=80" alt="AR 스마트글래스 현장 작업">
+            <div class="media-caption"><span>슈나이더 일렉트릭 스마트 팩토리 AR 정비 시스템</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16px;">700페이지가 넘는 로봇 매뉴얼 책자를 뒤적거리지 않고, 에러코드만 말하면 즉각 복구 절차를 화면에 띄웁니다.</p>
+        </div>
+        <div class="card card-highlight" style="justify-content: space-around;">
+          <div>
+            <h3 style="color: var(--brand-cyan); font-size: 22px;">초보자와 베테랑의 격차 해소</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">신규 엔지니어는 '배터리 교체 후 마스터링 작업'을 놓치기 쉽습니다. AI가 과거 숙련자의 정비 체크리스트를 팝업으로 안내합니다.</p>
+          </div>
+          <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+            <h3 style="color: var(--brand-orange); font-size: 21px;">현장 질문의 진화</h3>
+            <p style="font-size: 16.5px; line-height: 1.65;">"선배님, 책 몇 페이지 봐야 합니까?"를 묻던 시간에서, <strong>"AI가 권고한 부품 번호가 맞는지 확인해 주십시오"</strong>로 바뀝니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13: 말로 만드는 화면 (바이브 코딩 실제 시뮬레이터 구동) -->
+    <section class="slide-page" data-mod="2">
+      <div class="slide-eyebrow">MODULE 3 · VIBE CODING DEMO</div>
+      <h2 class="slide-title">말 한마디로 도구를 만드는 시대 : <em>바이브 코딩</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--brand-cyan); font-size: 22px;">자연어 프롬프트</h3>
+          <div style="background: rgba(0,0,0,0.5); padding: 18px; border-radius: 8px; font-family: monospace; font-size: 16px; line-height: 1.6; color: #a5f3fc; border: 1px solid rgba(0,229,255,0.25);">
+            "조선소 가상 현장에서 안전고리 미체결, 용접 불티 방포 훼손, 비상통로 적치물을 클릭하면 점수가 올라가는 웹 안전점검 미니 시뮬레이터를 1분 만에 짜줘."
+          </div>
+          <p style="margin-top: 14px; font-size: 16.5px;">코딩 문법을 몰라도, <strong>내가 필요한 업무 화면을 말로 설명하면 1분 만에 작동하는 웹 도구</strong>가 생성됩니다.</p>
+          <div style="margin-top: 16px;">
+            <button class="btn-action" id="btnLaunchSim" style="background: var(--brand-cyan); color: #050a14; font-weight: 800; font-size: 16px; padding: 12px 24px;" onclick="toggleSimulator(true)">
+              ▶ 가상 시뮬레이터 테스트 실행
+            </button>
+          </div>
+        </div>
+
+        <div class="card card-highlight" style="position: relative; overflow: hidden;">
+          <!-- 시뮬레이터 미실행 기본 상태 -->
+          <div id="simPlaceholder" style="display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center;">
+            <div class="media-box" style="width: 100%; min-height: 190px;">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="UI 대시보드 화면">
+              <div class="media-caption"><span>생성 대기 중인 조선소 안전점검 웹 프로토타입</span></div>
+            </div>
+            <p style="font-size: 15.5px; margin-top: 12px; color: var(--text-sub);">
+              좌측의 <strong>[가상 시뮬레이터 테스트 실행]</strong> 버튼을 누르면 AI가 즉시 빌드한 인터랙티브 점검 화면이 활성화됩니다.
+            </p>
+          </div>
+
+          <!-- 시뮬레이터 실제 작동 상태 -->
+          <div id="simActiveBox" style="display: none; flex-direction: column; height: 100%; justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+              <span style="color: var(--brand-cyan); font-weight: 800; font-size: 15px;">🦺 가상 조선소 현장 안전 점검기</span>
+              <span id="simScoreText" style="color: var(--brand-orange); font-weight: 900; font-size: 17px;">점수: 0 / 30</span>
+            </div>
+
+            <div style="margin: 12px 0; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 12px;">
+              <p style="font-size: 14.5px; color: #cbd5e1; margin-bottom: 10px;">
+                💡 아래 조선소 가상 위험 3개 요소를 클릭하여 조치해 보세요:
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-action sim-hazard-btn" id="simHaz1" onclick="resolveHazard(1, this)" style="justify-content: space-between; background: rgba(255,255,255,0.06);">
+                  <span>⚠️ [고소작업] 비계 상부 안전고리 체결 불량</span>
+                  <span style="color: var(--brand-orange); font-weight: 700;">점검 클릭</span>
+                </button>
+                <button class="btn-action sim-hazard-btn" id="simHaz2" onclick="resolveHazard(2, this)" style="justify-content: space-between; background: rgba(255,255,255,0.06);">
+                  <span>⚠️ [화기작업] 하부 용접 불티 방포 틈새 노출</span>
+                  <span style="color: var(--brand-orange); font-weight: 700;">점검 클릭</span>
+                </button>
+                <button class="btn-action sim-hazard-btn" id="simHaz3" onclick="resolveHazard(3, this)" style="justify-content: space-between; background: rgba(255,255,255,0.06);">
+                  <span>⚠️ [이동통로] 비상 탈출로 주변 자재 적치</span>
+                  <span style="color: var(--brand-orange); font-weight: 700;">점검 클릭</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="simCompletionMsg" style="display: none; background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); border-radius: 8px; padding: 10px 14px; text-align: center;">
+              <span style="color: #6ee7b7; font-weight: 800; font-size: 15px;">🎉 3대 위험 요소 조치 완료! (인터랙션 성공)</span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+              <button class="btn-action" style="font-size: 12px; padding: 6px 12px;" onclick="resetSimulator()">다시 시험</button>
+              <button class="btn-action" style="font-size: 12px; padding: 6px 12px; background: rgba(255,255,255,0.05);" onclick="toggleSimulator(false)">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 14: 좋은 AI가 현장에서 실패하는 이유 -->
+    <section class="slide-page" data-mod="2">
+      <div class="slide-eyebrow">MODULE 3 · REALITY GAP</div>
+      <h2 class="slide-title">좋은 AI가 <em>현장에 오면 엉뚱한 소리를 하는 이유</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--text-muted); font-size: 22px;">벽 1 : "같은 문제를 보고 있는가?"</h3>
+          <p style="font-size: 17px; line-height: 1.65; margin-bottom: 12px;">
+            • IT 개발팀: "불량 발생 확률 87.4%를 예측했습니다!"<br>
+            • 현장 반장님: <strong>"그래서 지금 라인을 세우라는 거야, 말라는 거야? 뭘 어떻게 조치해야 하는데?"</strong>
+          </p>
+          <div class="media-box" style="min-height: 170px;">
+            <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=800&q=80" alt="연구실 모니터 화면" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';">
+            <div class="media-caption"><span>숫자 확률만 말하는 AI vs 구체적 행동이 필요한 현장</span></div>
+          </div>
+        </div>
+        <div class="card card-highlight">
+          <h3 style="color: var(--brand-orange); font-size: 22px;">벽 2 : "현장엔 있지만 데이터엔 없다"</h3>
+          <p style="font-size: 17px; line-height: 1.65; margin-bottom: 12px;">
+            연구실 데이터에는 깨끗한 사진만 있지만, 실제 현장엔 <strong>'강한 용접 불꽃, 역광, 기름때, 쇳가루, 베테랑의 촉감'</strong>이 있습니다.
+          </p>
+          <div class="media-box" style="min-height: 170px;">
+            <img src="https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80" alt="거친 용접 아크광과 야외 환경" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80';">
+            <div class="media-caption"><span>데이터에 없는 현장 가혹 조건과 돌발 변수</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15: 할루시네이션(거짓말) 검증 시연 -->
+    <section class="slide-page" data-mod="2">
+      <div class="slide-eyebrow">MODULE 3 · FACT CHECKING</div>
+      <h2 class="slide-title">교대 메모 요약 : <em>AI의 확신과 치명적 맹점</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--brand-cyan); font-size: 22px;">현장 원본 메모</h3>
+          <div style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 8px; font-size: 16px; line-height: 1.7; color: #cbd5e1;">
+            [기록 1] 09:10 자재 상자 4개 라벨 검수 시작. 1~3번 완료.<br>
+            [기록 2] 10:00 4번 상자 확인 대기 유지 (도면 치수 미비).<br>
+            [기록 3] 11:00 4번 상자 확인 대기 지속. 다음 조 확인 담당자 미정.
+          </div>
+          <div class="media-box" style="min-height: 130px; margin-top: 14px;">
+            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="작업 일지 검수">
+          </div>
+        </div>
+        <div class="card card-highlight">
+          <h3 style="color: var(--danger); font-size: 22px;">AI가 만든 그럴듯한 요약 초안</h3>
+          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239,68,68,0.35); padding: 16px; border-radius: 8px; font-size: 16px; line-height: 1.7; color: #fca5a5;">
+            "금일 자재 상자 4개 라벨 검수가 <strong>모두 순조롭게 완료</strong>되었으며, 다음 조는 추가 확인 없이 <strong>즉시 후속 작업을 속행</strong>하시면 됩니다."
+          </div>
+          <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 8px; margin-top: 16px; border-left: 4px solid var(--danger);">
+            <strong style="color: #fff; font-size: 16.5px;">🚨 4번 상자가 '확인 대기'인데 AI가 '모두 완료'로 단정했습니다!</strong>
+            <p style="font-size: 15px; margin-top: 6px; color: #cbd5e1;">말투가 당당하고 자연스럽다고 해서 사실인 것은 아닙니다. <strong>최종 팩트 체크는 언제나 현장 리더의 몫</strong>입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 16: AI와 사람의 역할 분담 지도 (이미지 보강 완료) -->
+    <section class="slide-page" data-mod="2">
+      <div class="slide-eyebrow">MODULE 3 · COLLABORATION MAP</div>
+      <h2 class="slide-title">AI가 돕는 일과 <em>사람이 책임지는 일</em></h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--brand-cyan); font-size: 22px;">🤖 AI에게 과감히 넘길 일</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 700쪽 규정집과 도면에서 키워드 3초 검색</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 센서 파형에서 0.1% 미세 이상 패턴 탐지</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 거친 구두 녹음을 정형화된 교대 일지 초안으로 변환</li>
+          </ul>
+          <div class="media-box" style="min-height: 140px; margin-top: 14px;">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="초고속 알고리즘 연산">
+            <div class="media-caption"><span>데이터 고속 탐색, 비교, 정형 문서 초안 작성</span></div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 style="color: var(--brand-orange); font-size: 22px;">👷 현장 책임자가 끝까지 쥘 일</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 화면 알람을 보고 실제 부품과 현물을 최종 육안 확인</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 돌발 기상 변화 반영 및 라인 정지/작업 승인 결정</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 16px;">• 팀원의 안전 심리 케어와 외국인 작업자 조율</li>
+          </ul>
+          <div class="media-box" style="min-height: 140px; margin-top: 14px;">
+            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80" alt="안전모를 착용한 현장 책임자의 최종 확인" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80';">
+            <div class="media-caption"><span>현물 최종 확인, 예외 승인 및 책임 결정</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 17: 현장 리더의 무기 (도메인 지식) -->
+    <section class="slide-page" data-mod="3">
+      <div class="slide-eyebrow">MODULE 4 · DOMAIN KNOWLEDGE</div>
+      <h2 class="slide-title">현장책임자의 대체 불가능한 무기 : <em>도메인 지식</em></h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="media-box" style="min-height: 150px;">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="알고리즘 코드">
+          </div>
+          <h3 style="margin-top: 14px; font-size: 21px;">알고리즘은 구매 가능</h3>
+          <p>최신 AI 소프트웨어나 모델은 돈만 지불하면 어느 기업이나 구독하고 도입할 수 있습니다.</p>
+        </div>
+
+        <div class="card card-highlight">
+          <div class="media-box" style="min-height: 150px;">
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="현장 베테랑의 숙련 손길">
+          </div>
+          <h3 style="margin-top: 14px; font-size: 21px; color: var(--brand-orange);">현장 감각은 구매 불가</h3>
+          <p>거제 조선소의 야외 기후, 철판의 휨 상태, 용접 불꽃의 차이는 오직 여러분의 머릿속에만 있습니다.</p>
+        </div>
+
+        <div class="card">
+          <div class="media-box" style="min-height: 150px;">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" alt="기술과 인간의 협업">
+          </div>
+          <h3 style="margin-top: 14px; font-size: 21px;">결합될 때 완성되는 AX</h3>
+          <p>기술에 현장 리더의 도메인 지식이 더해질 때 비로소 <strong>'진짜 공장에서 헛돌지 않는 AI'</strong>가 됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 18: 현장 감각을 AI로 바꾸는 4대 질문 (이미지 중복 해소 및 고유 이미지 매칭) -->
+    <section class="slide-page" data-mod="3">
+      <div class="slide-eyebrow">MODULE 4 · 4 CORE QUESTIONS</div>
+      <h2 class="slide-title">"이 기계 오늘 소리가 이상한데?"를 <em>AI 언어로 바꾸는 4대 질문</em></h2>
+      <div class="grid-4">
+        <div class="card">
+          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 15px;">질문 1</span>
+          <h3 style="margin-top: 6px; font-size: 19px;">무엇을 보는가?</h3>
+          <p style="font-size: 15px;">이상하다고 느낄 때 눈으로 보는 연기, 소음 주파수, 베어링 발열.</p>
+          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
+            <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=500&q=80" alt="모터 진동 소음 계측 센서" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Sensor+Metric';">
+            <div class="media-caption"><span>감시 대상 구체화</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 15px;">질문 2</span>
+          <h3 style="margin-top: 6px; font-size: 19px;">무엇과 비교하는가?</h3>
+          <p style="font-size: 15px;">어제 정상 가동 상태의 표준 패턴과 과거 고장 직전 30분 데이터.</p>
+          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="정상 표준 지표 데이터 대조" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Data+Compare';">
+            <div class="media-caption"><span>정상 기준점 설정</span></div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <span style="color: var(--brand-orange); font-weight: 800; font-size: 15px;">질문 3 (핵심)</span>
+          <h3 style="margin-top: 6px; font-size: 19px;">언제 판단이 바뀌는가?</h3>
+          <p style="font-size: 15px;">정기 보수 직후의 일시적 온도 상승 등 현장만의 독특한 예외 조건.</p>
+          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
+            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=80" alt="야외 플랜트 및 현장 예외 작업 환경" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/ff6b35?text=Exception+Condition';">
+            <div class="media-caption"><span>예외 조건 지정</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 15px;">질문 4</span>
+          <h3 style="margin-top: 6px; font-size: 19px;">판단 후 무엇을 하는가?</h3>
+          <p style="font-size: 15px;">라인 즉시 정지, 윤활유 보충, 다음 조 인수인계 등 표준 행동 매핑.</p>
+          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
+            <img src="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=500&q=80" alt="엔지니어의 기계 정비 조치" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Standard+Action';">
+            <div class="media-caption"><span>구체적 조치 행동</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 19: 패들렛 인터랙티브 보드 (삭제 기능 및 실시간 하트 반영) -->
+    <section class="slide-page" data-mod="3">
+      <div class="slide-eyebrow">MODULE 4 · PADLET WORKSHOP</div>
+      <h2 class="slide-title">우리 조에서 <em>AI로 가장 덜어내고 싶은 일</em>은?</h2>
+      <div class="padlet-wrap">
+        <div class="padlet-form">
+          <input type="text" class="padlet-input" id="padletInput" placeholder="예: 교대 일지 중복 작성, 공구 위치 찾기, 외국인 소통 (입력 후 등록 클릭)" onkeypress="handlePadletEnter(event)">
+          <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 16px; padding: 12px 20px;" onclick="addPadletCard()">의견 등록하기</button>
+        </div>
+        <div class="padlet-board" id="padletBoard">
+          <div class="padlet-card" id="card-default-1">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+              <p style="margin: 0;">"매일 교대할 때마다 동일한 안전 수칙이랑 작업 주의사항 손으로 적는 게 제일 번거롭습니다."</p>
+              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-1')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
+            </div>
+            <small><span>1조 반장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 14</button></small>
+          </div>
+          <div class="padlet-card highlight-blue" id="card-default-2">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+              <p style="margin: 0;">"갑자기 설비 에러코드 떴을 때 두꺼운 책자 뒤적거리지 않고 스마트폰으로 바로 원인 보고 싶네요."</p>
+              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-2')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
+            </div>
+            <small><span>3조 직장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 21</button></small>
+          </div>
+          <div class="padlet-card highlight-green" id="card-default-3">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+              <p style="margin: 0;">"신규 외국인 근로자들에게 복잡한 도면 치수 설명할 때 3D로 쉽게 보여주는 도구가 필요합니다."</p>
+              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-3')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
+            </div>
+            <small><span>5조 반장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 18</button></small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 20: 팀원이 AI를 가져왔을 때 리더의 질문 (고유 이미지 배정) -->
+    <section class="slide-page" data-mod="3">
+      <div class="slide-eyebrow">MODULE 4 · PRACTICAL LEADERSHIP</div>
+      <h2 class="slide-title">팀원이 <em>"이거 AI로 해보겠습니다"</em>라고 올 때</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--brand-cyan); font-size: 22px;">질문 1 : 목적 확인</h3>
+          <p style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: #fff;">"이걸로 우리 조의 어떤 수고와 피로를 줄이려는 건가?"</p>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="현장 엔지니어 및 팀원과의 심층 소통" onerror="this.onerror=null; this.src='https://placehold.co/800x400/0a1526/00e5ff?text=Team+Dialogue';">
+            <div class="media-caption"><span>기술보다 선행되어야 할 팀원의 실질적 피로 경감 목적</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16.5px;">기술 자체가 멋있어서 쓰는 것이 아니라, 현장 동료의 작업 피로를 실질적으로 덜어주는 목적이 있는지 확인합니다.</p>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 style="color: var(--brand-orange); font-size: 22px;">질문 2 : 검증 책임 확인</h3>
+          <p style="font-size: 20px; font-weight: 800; margin-bottom: 12px; color: #fff;">"AI가 틀렸을 때 현물과 대조해 확인할 사람은 누구인가?"</p>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=800&q=80" alt="안전모를 착용한 책임자의 정밀 계측 및 현물 검증" onerror="this.onerror=null; this.src='https://placehold.co/800x400/0a1526/ff6b35?text=Ground+Truth+Verification';">
+            <div class="media-caption"><span>AI 출력값과 실제 부품의 최종 일치 검증 책임</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16.5px;">AI 결과를 맹신하다 사고가 나지 않도록, 최종 사실 확인(Ground Truth)의 책임 지점이 명확한지 짚어줍니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 21: 상생의 길 -->
+    <section class="slide-page" data-mod="3">
+      <div class="slide-eyebrow">MODULE 4 · VALUE PROPOSITION</div>
+      <h2 class="slide-title">상생의 길 : <em>일자리를 빼앗는 AI vs 피로를 덜어주는 AI</em></h2>
+      <div class="grid-2">
+        <div class="card" style="border-color: rgba(239, 68, 68, 0.4);">
+          <h3 style="color: var(--danger); font-size: 22px;">우리가 경계해야 할 오해</h3>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=800&q=80" alt="감시 카메라">
+            <div class="media-caption"><span>"AI는 작업자를 감시하고 평가하는 수단이다?"</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16.5px;">감시나 통제 수단으로 접근하면 현장의 거부감만 커집니다. 그것은 올바른 AX(인공지능 전환)의 방향이 아닙니다.</p>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 style="color: var(--success); font-size: 22px;">우리가 지향해야 할 현실</h3>
+          <div class="media-box" style="min-height: 160px;">
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="안전하고 쾌적한 일터">
+            <div class="media-caption"><span>"AI는 땀 흘리는 리더의 수고를 덜어주는 든든한 조수다"</span></div>
+          </div>
+          <p style="margin-top: 12px; font-size: 16.5px;">눈 아픈 대조와 서류 작성을 기술에 넘기고, 사람은 본연의 안전 관리와 기술 전수에 전념하는 일터입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 22: Closing -->
+    <section class="slide-page hero-bg" data-mod="3">
+      <div class="hero-wrap">
+        <div class="hero-badge">CONCLUSION</div>
+        <h1 class="hero-h1">AI를 가장 많이 아는 리더보다,<br><em style="color: var(--brand-cyan);">기술로 팀을 더 안전하게 만드는 리더</em></h1>
+        <p class="hero-lead">기술은 계속해서 발전하고 쉬워집니다. 하지만 현장에서 무엇이 진짜 문제인지 정의하고, 동료의 안전을 지키는 것은 오직 현장 책임자의 몫입니다.</p>
+        <div style="background: rgba(255, 107, 53, 0.18); border-left: 5px solid var(--brand-orange); padding: 20px 28px; border-radius: 8px;">
+          <p style="font-size: 21px; font-weight: 800; color: #fff;">"거제 현장의 안전과 땀방울을 언제나 응원합니다. 경청해 주셔서 대단히 감사합니다!"</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 하단 고정 푸터 -->
+  <footer class="app-footer">
+    <div class="page-indicator">
+      <strong id="currentSlideNum">01</strong> / <span id="totalSlideNum">22</span>
+    </div>
+    <div class="copyright-text">
+      &copy; 2026 Data Thinking Lab. All rights reserved.
+    </div>
+    <div class="footer-nav">
+      <button class="btn-nav" id="prevBtn" onclick="prevSlide()">← 이전</button>
+      <button class="btn-nav" id="nextBtn" onclick="nextSlide()">다음 →</button>
+    </div>
+  </footer>
+
+  <!-- 목차 모달 -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 22px; color: #fff; font-weight: 800;">전체 슬라이드 목차</h2>
+        <button style="background: transparent; border: none; color: #94a3b8; font-size: 24px; cursor: pointer;" onclick="toggleModal()">&times;</button>
+      </div>
+      <div class="toc-grid" id="tocGrid"></div>
+    </div>
+  </div>
+
+  <!-- Slido 및 QR 연동 설정 모달 -->
+  <div class="modal-overlay" id="slidoModalOverlay" onclick="closeSlidoOnBg(event)">
+    <div class="modal-box" style="width: min(650px, 92vw);">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+        <h2 style="font-size: 20px; color: #fff; font-weight: 800;">실시간 투표 연동 (Slido / Google Sheet)</h2>
+        <button style="background: transparent; border: none; color: #94a3b8; font-size: 24px; cursor: pointer;" onclick="toggleSlidoModal()">&times;</button>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 8px;">
+        <p style="font-size: 15px; color: #cbd5e1; line-height: 1.6;">
+          현장 환경에 맞춰 <strong>Slido</strong>, <strong>구글 설문지</strong>, 또는 <strong>현장 손들기 즉시 반영</strong> 중 가장 편한 방식으로 선택하여 운영하실 수 있습니다.
+        </p>
+
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+          <strong style="color: var(--brand-cyan); font-size: 16px; display: block; margin-bottom: 8px;">방법 1. Slido(슬라이도)로 투표 진행</strong>
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+            Slido에서 방(Event)을 만드신 후 이벤트 번호나 링크를 입력하면 바로 새 창에서 수강생 실시간 화면을 띄울 수 있습니다.
+          </p>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="slidoEventInput" placeholder="예: #1234567 또는 Slido 참여 링크" style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: #fff; font-size: 14px; outline: none;">
+            <button class="btn-action" style="background: var(--brand-cyan); color: #050a14; font-weight: 800;" onclick="launchSlido()">Slido 열기 ↗</button>
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+          <strong style="color: var(--brand-orange); font-size: 16px; display: block; margin-bottom: 8px;">방법 2. 현장 거수 즉시 반영 (가장 안전)</strong>
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 10px;">
+            수강생들에게 1~4번 중 손을 들게 한 뒤, 슬라이드 화면의 보기 행을 클릭하면 투표 수치가 자연스럽게 누적 반영됩니다.
+          </p>
+          <button class="btn-action" style="font-size: 13px; background: rgba(255,255,255,0.1);" onclick="resetPollData()">수치 초기화</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 컴포넌트 -->
+  <div class="toast-msg" id="toastMsg">
+    <span id="toastText">알림</span>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide-page');
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let timerInterval = null;
+    const moduleStartMap = [0, 5, 11, 16];
+
+    // 실시간 투표 상태
+    let livePollData = [31, 21, 13, 9];
+
+    // 13페이지 시뮬레이터 상태
+    let simState = { 1: false, 2: false, 3: false };
+    let simScore = 0;
+
+    function init() {
+      document.getElementById('totalSlideNum').textContent = String(totalSlides).padStart(2, '0');
+      buildTOC();
+      updateSlideView();
+    }
+
+    function updateSlideView() {
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === currentIndex));
+      document.getElementById('currentSlideNum').textContent = String(currentIndex + 1).padStart(2, '0');
+      document.getElementById('progressBar').style.width = ((currentIndex + 1) / totalSlides * 100) + '%';
+      document.getElementById('prevBtn').disabled = (currentIndex === 0);
+      document.getElementById('nextBtn').disabled = (currentIndex === totalSlides - 1);
+
+      const currentMod = parseInt(slides[currentIndex].getAttribute('data-mod') || '0');
+      document.querySelectorAll('.nav-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx === currentMod);
+      });
+    }
+
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) { currentIndex++; updateSlideView(); }
+    }
+    function prevSlide() {
+      if (currentIndex > 0) { currentIndex--; updateSlideView(); }
+    }
+    function jumpToSlide(idx) {
+      currentIndex = Math.max(0, Math.min(totalSlides - 1, idx));
+      updateSlideView();
+      const modal = document.getElementById('modalOverlay');
+      if (modal.classList.contains('active')) toggleModal();
+    }
+    function jumpToModule(modIndex) {
+      if (moduleStartMap[modIndex] !== undefined) jumpToSlide(moduleStartMap[modIndex]);
+    }
+
+    function buildTOC() {
+      const grid = document.getElementById('tocGrid');
+      grid.innerHTML = '';
+      slides.forEach((s, idx) => {
+        const titleEl = s.querySelector('.slide-title, .hero-h1');
+        const titleText = titleEl ? titleEl.innerText.replace(/\n/g, ' ') : `슬라이드 ${idx + 1}`;
+        const item = document.createElement('div');
+        item.className = 'toc-item';
+        item.innerHTML = `<span style="font-weight:900; color:var(--brand-cyan);">${String(idx + 1).padStart(2, '0')}</span> <span>${titleText}</span>`;
+        item.onclick = () => jumpToSlide(idx);
+        grid.appendChild(item);
+      });
+    }
+
+    function toggleModal() {
+      document.getElementById('modalOverlay').classList.toggle('active');
+    }
+    function closeModalOnBg(e) {
+      if (e.target.id === 'modalOverlay') toggleModal();
+    }
+
+    // Slido 모달 제어
+    function toggleSlidoModal() {
+      document.getElementById('slidoModalOverlay').classList.toggle('active');
+    }
+    function openSlidoModal() {
+      toggleSlidoModal();
+    }
+    function closeSlidoOnBg(e) {
+      if (e.target.id === 'slidoModalOverlay') toggleSlidoModal();
+    }
+
+    function launchSlido() {
+      const input = document.getElementById('slidoEventInput').value.trim();
+      if (!input) {
+        window.open('https://www.slido.com', '_blank');
+      } else if (input.startsWith('http')) {
+        window.open(input, '_blank');
+      } else {
+        const code = input.replace('#', '');
+        window.open(`https://app.sli.do/event/${code}`, '_blank');
+      }
+      toggleSlidoModal();
+      fireToast('Slido 투표 페이지가 새 창으로 열렸습니다.');
+    }
+
+    function resetPollData() {
+      livePollData = [0, 0, 0, 0];
+      document.querySelectorAll('.poll-item-row').forEach((r, idx) => {
+        r.classList.remove('voted');
+        document.getElementById(`bar-${idx}`).style.width = '0%';
+        document.getElementById(`score-${idx}`).textContent = '0표 (0%)';
+      });
+      document.getElementById('totalVotersText').textContent = '참여 인원: 0명';
+      toggleSlidoModal();
+      fireToast('투표 데이터가 0으로 초기화되었습니다.');
+    }
+
+    function fireToast(msg) {
+      const toast = document.getElementById('toastMsg');
+      document.getElementById('toastText').textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2400);
+    }
+
+    // 유튜브 오류 153 방지 mountVideo 함수 (GitHub Pages 호환)
+    function mountVideo(btn, videoId, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      const isLocal = window.location.protocol === 'file:';
+      const originParam = isLocal ? '' : `&origin=${encodeURIComponent(window.location.origin)}`;
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${originParam}`;
+
+      container.innerHTML = `
+        <iframe 
+          class="video-frame" 
+          src="${embedUrl}" 
+          title="동영상 플레이어" 
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      `;
+      fireToast('동영상 플레이어가 연결되었습니다.');
+    }
+
+    // 실시간 투표 집계 함수
+    function castVote(row, itemIdx) {
+      document.querySelectorAll('.poll-item-row').forEach(r => r.classList.remove('voted'));
+      row.classList.add('voted');
+
+      livePollData[itemIdx] += 1;
+      const total = livePollData.reduce((a, b) => a + b, 0);
+      document.getElementById('totalVotersText').textContent = `참여 인원: ${total}명`;
+
+      livePollData.forEach((count, idx) => {
+        const pct = Math.round((count / total) * 100);
+        document.getElementById(`bar-${idx}`).style.width = pct + '%';
+        document.getElementById(`score-${idx}`).textContent = `${count}표 (${pct}%)`;
+      });
+
+      fireToast('투표가 집계되었습니다.');
+    }
+
+    function revealOxAnswer(choice) {
+      document.getElementById('oxAnswerBox').style.display = 'block';
+      fireToast(`[${choice}] 선택 - 해설이 공개되었습니다.`);
+    }
+
+    function startChallengeTimer() {
+      clearInterval(timerInterval);
+      let sec = 10;
+      const el = document.getElementById('timerDigit');
+      el.textContent = '00:10';
+      timerInterval = setInterval(() => {
+        sec--;
+        el.textContent = '00:' + String(sec).padStart(2, '0');
+        if (sec <= 0) {
+          clearInterval(timerInterval);
+          el.textContent = '종료';
+          revealOddChip();
+        }
+      }, 1000);
+    }
+
+    function revealOddChip() {
+      document.getElementById('oddChip').classList.add('found');
+      fireToast('다른 부품번호 [A-3816] 발견!');
+    }
+    function chipClicked() {
+      revealOddChip();
+      clearInterval(timerInterval);
+    }
+
+    // 13페이지 가상 시뮬레이터 인터랙션 로직
+    function toggleSimulator(show) {
+      const placeholder = document.getElementById('simPlaceholder');
+      const activeBox = document.getElementById('simActiveBox');
+      if (show) {
+        placeholder.style.display = 'none';
+        activeBox.style.display = 'flex';
+        fireToast('가상 시뮬레이터가 화면에 로드되었습니다.');
+      } else {
+        placeholder.style.display = 'flex';
+        activeBox.style.display = 'none';
+      }
+    }
+
+    function resolveHazard(id, btn) {
+      if (simState[id]) return;
+      simState[id] = true;
+      simScore += 10;
+      btn.style.borderColor = 'var(--success)';
+      btn.style.background = 'rgba(16, 185, 129, 0.15)';
+      btn.innerHTML = `<span style="color:#6ee7b7; text-decoration: line-through;">✅ [조치완료] 위험 요소 제거됨</span><span style="color:var(--success); font-weight:800;">+10점</span>`;
+      document.getElementById('simScoreText').textContent = `점수: ${simScore} / 30`;
+
+      if (simScore >= 30) {
+        document.getElementById('simCompletionMsg').style.display = 'block';
+        fireToast('축하합니다! 모든 현장 위험을 안전하게 조치했습니다.');
+      } else {
+        fireToast(`위험 요소 ${id}번 조치 완료 (+10점)`);
+      }
+    }
+
+    function resetSimulator() {
+      simState = { 1: false, 2: false, 3: false };
+      simScore = 0;
+      document.getElementById('simScoreText').textContent = '점수: 0 / 30';
+      document.getElementById('simCompletionMsg').style.display = 'none';
+
+      const labels = [
+        '⚠️ [고소작업] 비계 상부 안전고리 체결 불량',
+        '⚠️ [화기작업] 하부 용접 불티 방포 틈새 노출',
+        '⚠️ [이동통로] 비상 탈출로 주변 자재 적치'
+      ];
+
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById(`simHaz${i}`);
+        btn.style.borderColor = 'var(--border)';
+        btn.style.background = 'rgba(255,255,255,0.06)';
+        btn.innerHTML = `<span>${labels[i - 1]}</span><span style="color: var(--brand-orange); font-weight: 700;">점검 클릭</span>`;
+      }
+      fireToast('시뮬레이터가 초기화되었습니다.');
+    }
+
+    // 19페이지 패들렛 보드 로직 (등록, 삭제, 하트 실시간 증가)
+    let cardCount = 3;
+
+    function addPadletCard() {
+      const input = document.getElementById('padletInput');
+      const val = input.value.trim();
+      if (!val) { fireToast('내용을 입력해주세요.'); return; }
+      
+      cardCount++;
+      const cardId = `card-dynamic-${cardCount}`;
+      const board = document.getElementById('padletBoard');
+      const card = document.createElement('div');
+      card.className = 'padlet-card highlight-blue';
+      card.id = cardId;
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+          <p style="margin: 0;">"${val}"</p>
+          <button class="padlet-del-btn" onclick="deletePadletCard('${cardId}')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
+        </div>
+        <small><span>방금 등록된 의견</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 1</button></small>
+      `;
+      board.prepend(card);
+      input.value = '';
+      fireToast('패들렛 보드에 의견이 등록되었습니다.');
+    }
+
+    function handlePadletEnter(e) { if (e.key === 'Enter') addPadletCard(); }
+
+    function deletePadletCard(cardId) {
+      const cardEl = document.getElementById(cardId);
+      if (cardEl) {
+        cardEl.style.transition = 'opacity 0.2s, transform 0.2s';
+        cardEl.style.opacity = '0';
+        cardEl.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+          cardEl.remove();
+          fireToast('의견이 삭제되었습니다.');
+        }, 200);
+      }
+    }
+
+    function likeCard(btn) {
+      let count = parseInt(btn.textContent.replace(/[^0-9]/g, '')) || 0;
+      count += 1;
+      btn.textContent = `❤️ ${count}`;
+      btn.style.transform = 'scale(1.2)';
+      btn.style.transition = 'transform 0.15s ease';
+      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+      fireToast(`공감했습니다 (현재 ${count}개)`);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+      else if (e.key === 'Escape') {
+        const modal = document.getElementById('modalOverlay');
+        if (modal.classList.contains('active')) toggleModal();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

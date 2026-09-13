@@ -414,7 +414,6 @@
         opacity: 1 !important; display: flex !important; transform: none !important; background-color: #060b14 !important;
       }
       .ox-answer-box { display: block !important; }
-      .poll-fill-bar { width: 45% !important; }
     }
   </style>
 </head>
@@ -464,28 +463,28 @@
       <div class="grid-2">
         <div class="poll-list" id="pollList">
           <div class="poll-item-row" onclick="castVote(this, 0)">
-            <div class="poll-fill-bar" id="bar-0" style="width: 42%;"></div>
+            <div class="poll-fill-bar" id="bar-0" style="width: 0%;"></div>
             <span class="poll-idx-badge">1</span>
             <span class="poll-label-txt">매일 교대 때마다 작업일지·안전체크 수기 작성 및 중복 정리</span>
-            <strong class="poll-score-txt" id="score-0">31표 (42%)</strong>
+            <strong class="poll-score-txt" id="score-0">0표 (0%)</strong>
           </div>
           <div class="poll-item-row" onclick="castVote(this, 1)">
-            <div class="poll-fill-bar" id="bar-1" style="width: 29%;"></div>
+            <div class="poll-fill-bar" id="bar-1" style="width: 0%;"></div>
             <span class="poll-idx-badge">2</span>
             <span class="poll-label-txt">도면 변경점 확인이나 장비 매뉴얼에서 에러코드 찾느라 헤매기</span>
-            <strong class="poll-score-txt" id="score-1">21표 (29%)</strong>
+            <strong class="poll-score-txt" id="score-1">0표 (0%)</strong>
           </div>
           <div class="poll-item-row" onclick="castVote(this, 2)">
-            <div class="poll-fill-bar" id="bar-2" style="width: 17%;"></div>
+            <div class="poll-fill-bar" id="bar-2" style="width: 0%;"></div>
             <span class="poll-idx-badge">3</span>
             <span class="poll-label-txt">신규 작업자나 외국인 근로자에게 같은 작업·안전 지시 반복 설명</span>
-            <strong class="poll-score-txt" id="score-2">13표 (17%)</strong>
+            <strong class="poll-score-txt" id="score-2">0표 (0%)</strong>
           </div>
           <div class="poll-item-row" onclick="castVote(this, 3)">
-            <div class="poll-fill-bar" id="bar-3" style="width: 12%;"></div>
+            <div class="poll-fill-bar" id="bar-3" style="width: 0%;"></div>
             <span class="poll-idx-badge">4</span>
             <span class="poll-label-txt">용접 결함, 부품 단차, 라벨 오타 놓칠까 봐 눈 아프게 대조하기</span>
-            <strong class="poll-score-txt" id="score-3">9표 (12%)</strong>
+            <strong class="poll-score-txt" id="score-3">0표 (0%)</strong>
           </div>
           
           <!-- 실시간 집계 컨트롤 바 (Slido / Google Sheet / 현장 거수 하이브리드 지원) -->
@@ -494,7 +493,7 @@
               <span style="font-size: 13.5px; color: var(--brand-cyan); font-weight: 700;" id="pollStatusText">● 실시간 집계 활성화</span>
               <button class="btn-action" style="padding: 4px 10px; font-size: 12px; background: rgba(0,229,255,0.15); color: var(--brand-cyan); border-color: var(--brand-cyan);" onclick="openSlidoModal()">Slido / QR 열기</button>
             </div>
-            <span style="font-size: 13.5px; color: #cbd5e1; font-weight: 700;" id="totalVotersText">참여 인원: 74명</span>
+            <span style="font-size: 13.5px; color: #cbd5e1; font-weight: 700;" id="totalVotersText">참여 인원: 0명</span>
           </div>
         </div>
 
@@ -1267,7 +1266,7 @@
     const moduleStartMap = [0, 5, 11, 16];
 
     // 실시간 투표 상태
-    let livePollData = [31, 21, 13, 9];
+    let livePollData = [0, 0, 0, 0];
 
     // 13페이지 시뮬레이터 상태
     let simState = { 1: false, 2: false, 3: false };

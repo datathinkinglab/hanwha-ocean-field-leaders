@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#060b14">
+  <title>실시간 투표 | 한화오션 현장책임자 특강</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg: #060b14; --card: #111c2e; --border: rgba(255,255,255,0.16);
+      --text: #f4f7fb; --sub: #c9d3e0; --orange: #ff6b35; --cyan: #00e5ff; --ok: #10b981; --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 15px; letter-spacing: -0.01em; }
+    .badge { background: var(--orange); color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 4px; font-weight: 800; }
+    h1 { font-size: 25px; line-height: 1.35; font-weight: 900; letter-spacing: -0.03em; }
+    h1 em { font-style: normal; color: var(--orange); }
+    .hint { font-size: 16px; color: var(--sub); line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .opt {
+      width: 100%; display: flex; align-items: center; gap: 14px; text-align: left;
+      background: var(--card); border: 2px solid var(--border); border-radius: 14px;
+      padding: 18px 16px; color: var(--text); font: inherit; font-size: 18px; font-weight: 700; line-height: 1.45;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    }
+    .opt:active { transform: scale(0.98); }
+    .opt .num {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,229,255,0.14); color: var(--cyan); font-weight: 900; font-size: 18px;
+    }
+    .opt.selected { border-color: var(--cyan); background: rgba(0,229,255,0.12); }
+    .opt.selected .num { background: var(--cyan); color: #04121a; }
+    .opt:disabled { opacity: 0.6; }
+    .status {
+      min-height: 56px; border-radius: 12px; padding: 14px 16px; font-size: 16px; font-weight: 700; line-height: 1.5;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--sub);
+    }
+    .status.ok { background: rgba(16,185,129,0.14); border-color: var(--ok); color: #a7f3d0; }
+    .status.err { background: rgba(239,68,68,0.14); border-color: var(--danger); color: #fecaca; }
+    .foot { font-size: 13px; color: #8a97a8; text-align: center; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand"><span>HANWHA OCEAN</span><span class="badge">현장책임자 AX 특강</span></div>
+    <h1 id="question">오늘 내 업무에서 <em>가장 덜어내고 싶은 수고</em>는?</h1>
+    <p class="hint">하나를 눌러 주세요. 결과가 강의 화면에 바로 반영됩니다. 다시 누르면 선택을 바꿀 수 있습니다.</p>
+    <div class="options" id="options"></div>
+    <div class="status" id="status" role="status" aria-live="polite">보기를 선택해 주세요.</div>
+    <p class="foot">익명으로 집계되며 개인정보는 수집하지 않습니다. · © 2026 Data Thinking Lab</p>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    const CFG = window.POLL_CONFIG || {};
+    const API = (CFG.POLL_API_URL || '').trim();
+    const OPTIONS = CFG.OPTIONS || [];
+
+    function store(key, val) {
+      try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); } catch (e) { return null; }
+    }
+    function clientId() {
+      let id = store('hwo_poll_cid');
+      if (!id) {
+        const rnd = (window.crypto && crypto.getRandomValues) ? Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(16).padStart(2, '0')).join('') : String(Math.random()).slice(2) + Date.now();
+        id = 'c' + rnd;
+        store('hwo_poll_cid', id);
+      }
+      return id;
+    }
+    const CID = clientId();
+
+    const statusEl = document.getElementById('status');
+    function setStatus(msg, kind) { statusEl.textContent = msg; statusEl.className = 'status' + (kind ? ' ' + kind : ''); }
+
+    const box = document.getElementById('options');
+    OPTIONS.forEach((label, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.dataset.choice = String(i + 1);
+      b.innerHTML = `<span class="num">${i + 1}</span><span></span>`;
+      b.lastElementChild.textContent = label;
+      b.addEventListener('click', () => vote(i + 1));
+      box.appendChild(b);
+    });
+
+    function markSelected(choice) {
+      box.querySelectorAll('.opt').forEach((b) => b.classList.toggle('selected', b.dataset.choice === String(choice)));
+    }
+    const saved = store('hwo_poll_choice');
+    if (saved) { markSelected(saved); setStatus(`${saved}번에 투표하셨습니다. 바꾸려면 다른 보기를 누르세요.`, 'ok'); }
+
+    if (!API) setStatus('투표 서버 주소가 아직 설정되지 않았습니다. 강사에게 알려 주세요.', 'err');
+
+    let busy = false;
+    async function vote(choice) {
+      if (!API || busy) return;
+      busy = true;
+      box.querySelectorAll('.opt').forEach((b) => (b.disabled = true));
+      markSelected(choice);
+      setStatus('전송 중...', '');
+      const url = `${API}?action=vote&choice=${choice}&cid=${encodeURIComponent(CID)}&t=${Date.now()}`;
+      let lastErr = '';
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          const res = await fetch(url, { method: 'GET', cache: 'no-store' });
+          const data = await res.json();
+          if (data.ok) {
+            store('hwo_poll_choice', String(choice));
+            setStatus(`✅ ${choice}번에 투표 완료! 강의 화면을 확인해 주세요. (현재 ${data.total}명 참여)`, 'ok');
+            lastErr = '';
+            break;
+          }
+          lastErr = data.error || '알 수 없는 오류';
+          if (lastErr === 'invalid choice' || lastErr === 'invalid client id') break;
+        } catch (e) {
+          lastErr = '네트워크 오류';
+        }
+        await new Promise((r) => setTimeout(r, 600 * (attempt + 1)));
+      }
+      if (lastErr) {
+        const prev = store('hwo_poll_choice');
+        markSelected(prev || '');
+        setStatus(`전송에 실패했습니다 (${lastErr}). 잠시 후 다시 눌러 주세요.`, 'err');
+      }
+      box.querySelectorAll('.opt').forEach((b) => (b.disabled = false));
+      busy = false;
+    }
+  </script>
+</body>
+</html>

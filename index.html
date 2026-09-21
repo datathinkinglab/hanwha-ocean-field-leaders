@@ -352,27 +352,9 @@
     }
 
     /* 19페이지 패들렛 */
-    .padlet-wrap { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-    .padlet-form { display: flex; gap: 12px; }
     .padlet-input {
       flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
       border-radius: 8px; padding: 16px 20px; color: #fff; font-size: 19px; outline: none;
-    }
-    .padlet-board {
-      flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; overflow-y: auto; padding-right: 4px;
-    }
-    .padlet-card {
-      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border);
-      border-left: 5px solid var(--brand-orange); border-radius: 10px; padding: 16px;
-      display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
-    }
-    .padlet-card.highlight-blue { border-left-color: var(--brand-cyan); }
-    .padlet-card.highlight-green { border-left-color: var(--success); }
-    .padlet-card p { font-size: 20px; line-height: 1.55; color: #f8fafc; font-weight: 500; }
-    .padlet-card small { color: var(--text-muted); font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .padlet-heart {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ff6b35; cursor: pointer; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 16px;
     }
 
     /* 하단 푸터 */
@@ -501,6 +483,141 @@
     .qr-big svg { width: 100%; height: 100%; display: block; }
     .qr-url { font-size: 15px; color: var(--text-sub); word-break: break-all; }
 
+    /* 10초 챌린지 팝업 */
+    .btn-collapse { display: none !important; }
+    .challenge-overlay {
+      position: fixed; inset: 0; z-index: 120; display: flex; align-items: center; justify-content: center;
+      background: rgba(2, 5, 10, 0.92); backdrop-filter: blur(6px);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .challenge-overlay.active { opacity: 1; pointer-events: auto; }
+    .challenge-box {
+      width: min(96vw, 1760px); max-height: 96vh; display: flex; flex-direction: column; gap: 2vh;
+      background: var(--bg-surface); border: 1px solid var(--border); border-radius: 18px; padding: 3vh 2.4vw;
+      transform: scale(0.94); transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .challenge-overlay.active .challenge-box { transform: none; }
+    .challenge-head h2 { font-size: clamp(28px, 2.6vw, 46px); font-weight: 900; letter-spacing: -0.03em; color: #fff; margin-top: 4px; }
+    .challenge-head h2 em { font-style: normal; color: var(--brand-orange); }
+    .challenge-box .btn-expand { display: none !important; }
+    .challenge-box .btn-collapse { display: inline-flex !important; margin-left: auto; }
+    .challenge-box .timer-wrap { gap: 20px; margin-bottom: 2vh; }
+    .challenge-box .timer-wrap .btn-action { font-size: clamp(16px, 1.3vw, 22px); padding: 12px 22px; }
+    .challenge-box .timer-digit { font-size: clamp(44px, 4.4vw, 80px); }
+    .challenge-box .board-grid { gap: 1.2vw; margin-bottom: 0; }
+    .challenge-box .board-chip {
+      font-size: clamp(24px, 2.7vw, 50px); padding: 2.6vh 0.5vw; border-radius: 10px; letter-spacing: 0.02em;
+    }
+    .challenge-box .board-chip.target-chip.found { transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 107, 53, 0.8); }
+
+    /* 19페이지 4대 질문 */
+    .q4-lead { word-break: keep-all; font-size: 21px; color: var(--text-sub); margin: -6px 0 16px; line-height: 1.5; }
+    .q4-lead strong { color: #fff; }
+    .q4-grid { gap: 18px; }
+    .q4-card { gap: 10px; padding: 20px; }
+    .q4-card h3 { margin: 0; font-size: 25px; }
+    .q4-tag { font-size: 16px; font-weight: 800; color: var(--brand-cyan); letter-spacing: 0.02em; }
+    .q4-tag-key { color: var(--brand-orange); }
+    .q4-sub { font-size: 17px; font-weight: 700; color: var(--text-muted); margin-top: -4px; }
+    .q4-voice, .q4-rule { border-radius: 10px; padding: 14px 16px; font-size: 22px; line-height: 1.5; display: flex; flex-direction: column; justify-content: center; word-break: keep-all; }
+    .q4-voice small, .q4-rule small { flex: none; }
+    .q4-voice { background: rgba(255, 255, 255, 0.06); border: 1px dashed rgba(255, 255, 255, 0.28); color: #fff; font-weight: 600; flex: 1; }
+    .q4-rule { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.45); color: var(--text-sub); flex: 1; }
+    .q4-rule strong { color: #fff; }
+    .q4-voice small, .q4-rule small { display: block; font-size: 15px; font-weight: 800; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .q4-voice small { color: var(--brand-orange); }
+    .q4-rule small { color: var(--brand-cyan); }
+    .q4-arrow { text-align: center; color: var(--text-muted); font-size: 16px; line-height: 1; }
+    .q4-takeaway {
+      margin-top: 16px; padding: 14px 20px; border-radius: 10px; font-size: 20px; font-weight: 600; color: var(--text-sub);
+      background: rgba(255, 107, 53, 0.12); border-left: 5px solid var(--brand-orange);
+    }
+    .q4-takeaway strong { color: #fff; }
+    @media (max-height: 820px) {
+      .q4-lead { font-size: 18px; margin-bottom: 10px; }
+      .q4-card { padding: 14px; gap: 7px; }
+      .q4-card h3 { font-size: 21px; }
+      .q4-voice, .q4-rule { font-size: 16px; padding: 10px 12px; }
+      .q4-sub { font-size: 15px; }
+      .q4-takeaway { font-size: 17px; margin-top: 10px; padding: 10px 16px; }
+    }
+
+    /* 16페이지 교대 메모 팩트체크 */
+    .fc-lead { font-size: clamp(18px, 2.1vh, 23px); color: var(--text-sub); margin: -6px 0 1.6vh; word-break: keep-all; }
+    .fc-lead strong { color: #fff; }
+    .fc-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; flex: 1; min-height: 0; }
+    .fc-card { gap: 1.2vh; }
+    .fc-step { font-size: clamp(16px, 1.9vh, 21px); font-weight: 800; color: var(--brand-cyan); }
+    .fc-step-ai { color: #fca5a5; }
+    .fc-memo { list-style: none; display: flex; flex-direction: column; justify-content: center; gap: 1.6vh; flex: 1; }
+    .fc-memo li { font-size: clamp(17px, 2.3vh, 25px); line-height: 1.45; color: var(--text-sub); padding: 1vh 14px; border-radius: 8px; background: rgba(0,0,0,0.3); word-break: keep-all; }
+    .fc-memo b { color: var(--brand-cyan); margin-right: 10px; font-variant-numeric: tabular-nums; }
+    .fc-summary { font-size: clamp(19px, 2.8vh, 31px) !important; line-height: 1.6 !important; color: #fff !important; font-weight: 600 !important; flex: 1; word-break: keep-all;
+      display: flex; align-items: center;
+      background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 2vh 20px; }
+    .fc-summary > span { display: block; }
+    .fc-ai { border-color: rgba(239, 68, 68, 0.45); }
+    .fc-arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 15px; font-weight: 800; }
+    .fc-arrow span { font-size: 36px; line-height: 1; color: var(--brand-orange); }
+    #factCheck mark { background: transparent; color: inherit; border-radius: 4px; padding: 0 2px; transition: background 0.3s, color 0.3s; }
+    #factCheck.revealed .fc-key mark { background: rgba(0, 229, 255, 0.25); color: #fff; }
+    #factCheck.revealed .fc-summary mark { background: rgba(239, 68, 68, 0.45); color: #fff; text-decoration: line-through; text-decoration-thickness: 2px; }
+    #factCheck.revealed .fc-key { box-shadow: inset 4px 0 0 var(--brand-cyan); }
+    .fc-btn { align-self: flex-start; background: var(--danger) !important; border: none !important; font-size: 17px !important; padding: 10px 18px !important; }
+    #factCheck.revealed .fc-btn { display: none; }
+    .fc-result { display: none; margin-top: 1.6vh; grid-template-columns: 1.25fr 1fr; gap: 14px; align-items: stretch; }
+    .fc-result.show { display: grid; animation: fcIn 0.35s ease; }
+    @keyframes fcIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .fc-diffs { display: flex; flex-direction: column; gap: 10px; }
+    .fc-diff { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1vh 18px; font-size: clamp(16px, 2.1vh, 23px); color: var(--text-sub); }
+    .fc-diff small { display: block; font-size: 13px; font-weight: 800; color: var(--text-muted); }
+    .fc-diff strong { color: #fff; }
+    .fc-vs { font-size: 30px; font-weight: 900; color: var(--danger); }
+    .fc-takeaway { margin: 0; padding: 1.4vh 20px; border-radius: 10px; font-size: clamp(16px, 2.1vh, 23px); line-height: 1.55; color: var(--text-sub); background: rgba(255, 107, 53, 0.12); border-left: 5px solid var(--brand-orange); word-break: keep-all; display: flex; align-items: center; }
+    .fc-takeaway > span { display: block; }
+    .fc-takeaway strong { color: #fff; }
+    @media print { .fc-result { display: grid !important; } }
+
+    /* 20페이지 포스트잇 아이디어 보드 */
+    .idea-wrap { flex: 1; display: flex; flex-direction: column; gap: 1.4vh; min-height: 0; }
+    .idea-bar { display: flex; align-items: center; gap: 16px; padding: 10px 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; }
+    .idea-qr { flex-shrink: 0; width: 92px; height: 92px; background: #fff; border-radius: 8px; padding: 5px; cursor: zoom-in; box-shadow: 0 0 0 2px rgba(0,229,255,0.5); }
+    .idea-qr svg { width: 100%; height: 100%; display: block; }
+    .idea-bar-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .idea-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .idea-count { font-size: 19px; font-weight: 900; color: var(--brand-orange); }
+    .idea-form { display: flex; gap: 12px; }
+    .idea-board {
+      flex: 1; min-height: 0; overflow-y: auto; padding: 8px 4px 10px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; align-content: start;
+    }
+    .pit {
+      position: relative; border-radius: 4px; padding: 16px 16px 42px; color: #1f2937;
+      font-size: 20px; font-weight: 600; line-height: 1.45; word-break: keep-all;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.45); transform: rotate(var(--rot));
+      transition: transform 0.2s ease, box-shadow 0.2s ease; animation: pitIn 0.35s ease;
+      min-height: 132px; display: flex; flex-direction: column;
+    }
+    .pit:hover { transform: rotate(0deg) scale(1.03); box-shadow: 0 14px 30px rgba(0,0,0,0.55); z-index: 2; }
+    @keyframes pitIn { from { opacity: 0; transform: rotate(var(--rot)) translateY(-14px) scale(0.92); } to { opacity: 1; } }
+    .pit-text { flex: 1; }
+    .pit-who { position: absolute; left: 16px; bottom: 12px; font-size: 15px; font-weight: 800; color: rgba(31,41,55,0.7); }
+    .pit-like {
+      position: absolute; right: 12px; bottom: 10px; background: rgba(255,255,255,0.65); border: none;
+      border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 16px; font-weight: 800; color: #b91c1c; cursor: pointer;
+    }
+    .pit-like:hover { background: #fff; }
+    .pit-del { position: absolute; right: 8px; top: 6px; background: transparent; border: none; color: rgba(31,41,55,0.45); font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 6px; }
+    .pit-del:hover { color: #b91c1c; }
+    .idea-empty { font-size: 20px; color: var(--text-muted); text-align: center; padding: 2vh 0; }
+    .idea-empty.hide { display: none; }
+    @media (max-height: 820px) {
+      .idea-qr { width: 78px; height: 78px; }
+      .idea-bar { padding: 8px 12px; gap: 12px; }
+      .pit { font-size: 17px; min-height: 112px; padding: 12px 12px 36px; }
+      .idea-board { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+
     /* 영상 확대 재생 (시어터 모드) */
     .media-box.has-video { cursor: zoom-in; }
     .media-box.has-video img { transition: transform 0.45s ease; }
@@ -543,7 +660,7 @@
     @media print {
       @page { size: 16in 9in; margin: 0; }
       body { background-color: #060b14 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: auto !important; overflow: visible !important; }
-      .app-header, .app-footer, .progress-bar-container, .modal-overlay, .toast-msg, .padlet-form, .btn-action, .video-theater { display: none !important; }
+      .app-header, .app-footer, .progress-bar-container, .modal-overlay, .toast-msg, .idea-form, .btn-action, .video-theater, .challenge-overlay { display: none !important; }
       .viewport { padding: 0 !important; height: auto !important; overflow: visible !important; display: block !important; }
       .slide-page {
         position: relative !important; inset: auto !important; width: 16in !important; height: 9in !important;
@@ -806,7 +923,7 @@
               <a href="https://www.youtube.com/watch?v=pjO51vbbCRY" target="_blank" style="color:var(--brand-cyan); text-decoration:none;">새 창 ↗</a>
             </div>
           </div>
-          <p style="margin-top: 12px; font-size: 20px;">스마트폰 하나로 베트남·우즈베크 근로자와 모국어로 안전 수칙을 즉시 주고받습니다.</p>
+          <p style="margin-top: 12px; font-size: 20px;">스마트폰 하나로 베트남·우즈베키스탄 근로자와 모국어로 안전 수칙을 즉시 주고받습니다.</p>
         </div>
 
         <div class="card card-highlight" style="justify-content: space-around;">
@@ -828,7 +945,7 @@
       <h2 class="slide-title">생각해보기 : <em>로봇이 움직이면 다 AI일까요?</em></h2>
       <div class="grid-2">
         <div>
-          <p style="font-size: 22px; color: #cbd5e1; margin-bottom: 14px;">현장에서 일하는 로봇과 설비, 과연 어디서부터 인공지능일까요?</p>
+          <p style="font-size: 22px; color: var(--text-sub); margin-bottom: 14px;">"정해진 좌표대로 똑같이 반복 용접하는 로봇도 <strong style="color:#fff;">AI다</strong>." 맞으면 O, 아니면 X를 골라 주세요.</p>
           <div class="ox-container">
             <div class="ox-card o-btn" onclick="revealOxAnswer('O')">O</div>
             <div class="ox-card x-btn" onclick="revealOxAnswer('X')">X</div>
@@ -880,7 +997,7 @@
             <p style="font-size: 19px;">사람이 눈 아프게 찾던 미세 스크래치를 화면에 자동 바운딩 박스로 표시</p>
           </div>
           <div style="border-top: 1px solid var(--border); padding-top: 12px;">
-            <span style="color: var(--success); font-weight: 800; font-size: 18px;">STEP 03 (핵심)</span>
+            <span style="color: var(--success); font-weight: 800; font-size: 18px;">STEP 03 · 핵심</span>
             <h3 style="margin-top: 4px; font-size: 25px;">베테랑 작업자의 최종 확인 및 조치</h3>
             <p style="font-size: 19px;">AI가 짚어준 부위를 작업자가 직접 만져보고 원인 파악 및 라인 피드백</p>
           </div>
@@ -894,10 +1011,13 @@
       <h2 class="slide-title">10초 챌린지 : <em>다른 부품 번호 하나를 찾아보세요</em></h2>
       <div class="grid-2">
         <div>
+          <div id="challengeHome"><div id="challengeGame">
           <div class="timer-wrap">
             <button class="btn-action" onclick="startChallengeTimer()">10초 시작</button>
             <div class="timer-digit" id="timerDigit">00:10</div>
             <button class="btn-action" style="background: rgba(255,255,255,0.06);" onclick="revealOddChip()">정답 위치 보기</button>
+            <button class="btn-action btn-expand" style="margin-left: auto; background: var(--brand-orange); border: none;" onclick="openChallengePopup()">⛶ 크게 보기</button>
+            <button class="btn-action btn-collapse" onclick="closeChallengePopup()">✕ 닫기 (Esc)</button>
           </div>
           <div class="board-grid">
             <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div>
@@ -905,6 +1025,7 @@
             <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip target-chip" id="oddChip" onclick="chipClicked()">A-3816</div><div class="board-chip">A-3861</div>
             <div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div><div class="board-chip">A-3861</div>
           </div>
+          </div></div>
           <p style="color: var(--text-muted); font-size: 19px;">※ 사람은 피로해지면 숫자 하나 바뀐 것을 놓치기 쉽습니다. <strong>단순 대조 피로는 AI에게 넘겨야 합니다.</strong></p>
         </div>
 
@@ -913,10 +1034,10 @@
             <img src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80" alt="정밀 비전 검사 이미지" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80';">
             <!-- 바운딩 박스 오버레이 -->
             <div style="position: absolute; top: 28%; left: 35%; width: 95px; height: 80px; border: 2px solid var(--brand-orange); border-radius: 4px; box-shadow: 0 0 12px rgba(255,107,53,0.85); pointer-events: none;">
-              <span style="position: absolute; top: -22px; left: 0; background: var(--brand-orange); color: #fff; font-size: 13px; font-weight: 800; padding: 2px 6px; border-radius: 3px;">결함 의심 98.4%</span>
+              <span style="position: absolute; top: -22px; left: 0; background: var(--brand-orange); color: #fff; font-size: 13px; font-weight: 800; padding: 2px 6px; border-radius: 3px;">결함 의심 98.4% (예시)</span>
             </div>
             <div class="media-caption">
-              <span>스마트 비전 AI의 자동 결함 바운딩 박스 검출 원리</span>
+              <span>원리 설명용 예시 이미지 · 실제 검사 화면이 아닙니다</span>
             </div>
           </div>
           <p style="font-size: 19px; margin-top: 12px;">기계는 수만 번을 봐도 피로해지지 않습니다. 눈 아픈 단순 비교는 AI에게 맡기고, 사람은 문제 해결과 조치에 집중해야 합니다.</p>
@@ -1022,7 +1143,7 @@
         <div class="card card-highlight" style="justify-content: space-around;">
           <div>
             <h3 style="color: var(--brand-cyan); font-size: 26px;">초보자와 베테랑의 격차 해소</h3>
-            <p style="font-size: 20px; line-height: 1.65;">신규 엔지니어는 '배터리 교체 후 마스터링 작업'을 놓치기 쉽습니다. AI가 과거 숙련자의 정비 체크리스트를 팝업으로 안내합니다.</p>
+            <p style="font-size: 20px; line-height: 1.65;">신규 작업자는 부품 교체 뒤 원점 재설정이나 안전장치 복구 같은 마무리 절차를 빠뜨리기 쉽습니다. AI가 숙련자의 정비 체크리스트를 순서대로 띄워 줍니다.</p>
           </div>
           <div style="border-top: 1px solid var(--border); padding-top: 14px;">
             <h3 style="color: var(--brand-orange); font-size: 25px;">현장 질문의 진화</h3>
@@ -1055,17 +1176,17 @@
           <div id="simPlaceholder" style="display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; text-align: center;">
             <div class="media-box" style="width: 100%; min-height: 190px;">
               <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="UI 대시보드 화면">
-              <div class="media-caption"><span>생성 대기 중인 조선소 안전점검 웹 프로토타입</span></div>
+              <div class="media-caption"><span>바이브 코딩으로 만든 조선소 안전점검 예시 화면</span></div>
             </div>
             <p style="font-size: 19px; margin-top: 12px; color: var(--text-sub);">
-              좌측의 <strong>[가상 시뮬레이터 테스트 실행]</strong> 버튼을 누르면 AI가 즉시 빌드한 인터랙티브 점검 화면이 활성화됩니다.
+              좌측 <strong>[가상 시뮬레이터 테스트 실행]</strong> 버튼을 누르면, 위 프롬프트로 <strong>미리 만들어 둔 예시 화면</strong>이 열립니다.
             </p>
           </div>
 
           <!-- 시뮬레이터 실제 작동 상태 -->
           <div id="simActiveBox" style="display: none; flex-direction: column; height: 100%; justify-content: space-between;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-              <span style="color: var(--brand-cyan); font-weight: 800; font-size: 18px;">🦺 가상 조선소 현장 안전 점검기</span>
+              <span style="color: var(--brand-cyan); font-weight: 800; font-size: 18px;">🦺 조선소 안전 점검기 (예시 화면)</span>
               <span id="simScoreText" style="color: var(--brand-orange); font-weight: 900; font-size: 20px;">점수: 0 / 30</span>
             </div>
 
@@ -1134,29 +1255,35 @@
     <!-- Slide 15: 할루시네이션(거짓말) 검증 시연 -->
     <section class="slide-page" data-mod="2">
       <div class="slide-eyebrow">MODULE 3 · FACT CHECKING</div>
-      <h2 class="slide-title">교대 메모 요약 : <em>AI의 확신과 치명적 맹점</em></h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3 style="color: var(--brand-cyan); font-size: 26px;">현장 원본 메모</h3>
-          <div style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 8px; font-size: 19px; line-height: 1.7; color: #cbd5e1;">
-            [기록 1] 09:10 자재 상자 4개 라벨 검수 시작. 1~3번 완료.<br>
-            [기록 2] 10:00 4번 상자 확인 대기 유지 (도면 치수 미비).<br>
-            [기록 3] 11:00 4번 상자 확인 대기 지속. 다음 조 확인 담당자 미정.
-          </div>
-          <div class="media-box" style="min-height: 130px; margin-top: 14px;">
-            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="작업 일지 검수">
-          </div>
+      <h2 class="slide-title">교대 메모 요약 : <em>AI가 그럴듯하게 틀리는 순간</em></h2>
+      <p class="fc-lead">오전 조 메모를 AI에게 <strong>"다음 조 인계용으로 요약해 줘"</strong>라고 맡겼습니다. 무엇이 달라졌을까요?</p>
+      <div class="fc-grid" id="factCheck">
+        <div class="card fc-card">
+          <span class="fc-step">① 현장 원본 메모</span>
+          <ul class="fc-memo">
+            <li><b>09:10</b> 자재 상자 4개 라벨 검수 시작</li>
+            <li><b>10:00</b> 1~3번 상자 검수 완료</li>
+            <li class="fc-key"><b>10:00</b> 4번 상자는 도면 치수가 없어 <mark>확인 보류</mark></li>
+            <li class="fc-key"><b>11:00</b> 4번 상자 여전히 보류 · 다음 조 <mark>확인 담당자 미정</mark></li>
+          </ul>
         </div>
-        <div class="card card-highlight">
-          <h3 style="color: var(--danger); font-size: 26px;">AI가 만든 그럴듯한 요약 초안</h3>
-          <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239,68,68,0.35); padding: 16px; border-radius: 8px; font-size: 19px; line-height: 1.7; color: #fca5a5;">
-            "금일 자재 상자 4개 라벨 검수가 <strong>모두 순조롭게 완료</strong>되었으며, 다음 조는 추가 확인 없이 <strong>즉시 후속 작업을 속행</strong>하시면 됩니다."
-          </div>
-          <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 8px; margin-top: 16px; border-left: 4px solid var(--danger);">
-            <strong style="color: #fff; font-size: 20px;">🚨 4번 상자가 '확인 대기'인데 AI가 '모두 완료'로 단정했습니다!</strong>
-            <p style="font-size: 18px; margin-top: 6px; color: #cbd5e1;">말투가 당당하고 자연스럽다고 해서 사실인 것은 아닙니다. <strong>최종 팩트 체크는 언제나 현장 리더의 몫</strong>입니다.</p>
-          </div>
+        <div class="fc-arrow">AI 요약<span>→</span></div>
+        <div class="card fc-card fc-ai">
+          <span class="fc-step fc-step-ai">② AI가 만든 인계 요약</span>
+          <p class="fc-summary"><span>"자재 상자 4개 라벨 검수를 <mark>모두 완료</mark>했습니다. 다음 조는 <mark>추가 확인 없이</mark> 후속 작업을 진행하면 됩니다."</span></p>
+          <button class="btn-action fc-btn" onclick="revealFactCheck()">🔍 틀린 곳 찾기</button>
         </div>
+      </div>
+      <div class="fc-result" id="factCheckResult">
+        <div class="fc-diffs">
+        <div class="fc-diff">
+          <div><small>원본</small>4번 상자 <strong>확인 보류</strong></div><div class="fc-vs">≠</div><div><small>AI 요약</small><strong>모두 완료</strong></div>
+        </div>
+        <div class="fc-diff">
+          <div><small>원본</small>다음 조 <strong>담당자 미정</strong></div><div class="fc-vs">≠</div><div><small>AI 요약</small><strong>추가 확인 없이 진행</strong></div>
+        </div>
+        </div>
+        <p class="fc-takeaway"><span>문장이 매끄러울수록 그대로 믿고 싶어집니다. 인계 전에 <strong>'보류·미정' 항목만큼은 원본 메모와 대조</strong>하는 것이 현장 리더의 몫입니다.</span></p>
       </div>
     </section>
 
@@ -1170,7 +1297,7 @@
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
             <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 700쪽 규정집과 도면에서 키워드 3초 검색</li>
             <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 센서 파형에서 0.1% 미세 이상 패턴 탐지</li>
-            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 거친 구두 녹음을 정형화된 교대 일지 초안으로 변환</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 현장에서 말로 남긴 녹음을 교대 일지 초안으로 정리</li>
           </ul>
           <div class="media-box" style="min-height: 140px; margin-top: 14px;">
             <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="초고속 알고리즘 연산">
@@ -1183,7 +1310,7 @@
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
             <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 화면 알람을 보고 실제 부품과 현물을 최종 육안 확인</li>
             <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 돌발 기상 변화 반영 및 라인 정지/작업 승인 결정</li>
-            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 팀원의 안전 심리 케어와 외국인 작업자 조율</li>
+            <li style="background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 6px; font-size: 19px;">• 팀원의 안전 심리 살피기와 외국인 작업자 조율</li>
           </ul>
           <div class="media-box" style="min-height: 140px; margin-top: 14px;">
             <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80" alt="안전모를 착용한 현장 책임자의 최종 확인" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80';">
@@ -1228,82 +1355,67 @@
     <section class="slide-page" data-mod="3">
       <div class="slide-eyebrow">MODULE 4 · 4 CORE QUESTIONS</div>
       <h2 class="slide-title">"이 기계 오늘 소리가 이상한데?"를 <em>AI 언어로 바꾸는 4대 질문</em></h2>
-      <div class="grid-4">
-        <div class="card">
-          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 18px;">질문 1</span>
-          <h3 style="margin-top: 6px; font-size: 23px;">무엇을 보는가?</h3>
-          <p style="font-size: 18px;">이상하다고 느낄 때 눈으로 보는 연기, 소음 주파수, 베어링 발열.</p>
-          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
-            <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=500&q=80" alt="모터 진동 소음 계측 센서" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Sensor+Metric';">
-            <div class="media-caption"><span>감시 대상 구체화</span></div>
-          </div>
+      <p class="q4-lead">반장님의 <strong>감(感)</strong>을 네 가지 질문으로 풀어 쓰면, AI가 따라 할 수 있는 <strong>판단 기준</strong>이 됩니다.</p>
+      <div class="grid-4 q4-grid">
+        <div class="card q4-card">
+          <span class="q4-tag">질문 1</span>
+          <h3>무엇을 보는가?</h3>
+          <span class="q4-sub">감시 대상 정하기</span>
+          <div class="q4-voice"><small>현장의 말</small><span>"2번 롤러에서 평소와 다른 소리가 나."</span></div>
+          <div class="q4-arrow">▼</div>
+          <div class="q4-rule"><small>AI에게 알려줄 기준</small><span>2번 롤러 베어링의 <strong>진동·소음·온도</strong>를 지켜본다</span></div>
         </div>
-
-        <div class="card">
-          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 18px;">질문 2</span>
-          <h3 style="margin-top: 6px; font-size: 23px;">무엇과 비교하는가?</h3>
-          <p style="font-size: 18px;">어제 정상 가동 상태의 표준 패턴과 과거 고장 직전 30분 데이터.</p>
-          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" alt="정상 표준 지표 데이터 대조" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Data+Compare';">
-            <div class="media-caption"><span>정상 기준점 설정</span></div>
-          </div>
+        <div class="card q4-card">
+          <span class="q4-tag">질문 2</span>
+          <h3>무엇과 비교하는가?</h3>
+          <span class="q4-sub">정상 기준 정하기</span>
+          <div class="q4-voice"><small>현장의 말</small><span>"어제까지는 이런 소리가 안 났는데."</span></div>
+          <div class="q4-arrow">▼</div>
+          <div class="q4-rule"><small>AI에게 알려줄 기준</small><span>정상 가동 때의 진동 범위, 과거 <strong>고장 직전 패턴</strong>과 비교한다</span></div>
         </div>
-
-        <div class="card card-highlight">
-          <span style="color: var(--brand-orange); font-weight: 800; font-size: 18px;">질문 3 (핵심)</span>
-          <h3 style="margin-top: 6px; font-size: 23px;">언제 판단이 바뀌는가?</h3>
-          <p style="font-size: 18px;">정기 보수 직후의 일시적 온도 상승 등 현장만의 독특한 예외 조건.</p>
-          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
-            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=80" alt="야외 플랜트 및 현장 예외 작업 환경" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/ff6b35?text=Exception+Condition';">
-            <div class="media-caption"><span>예외 조건 지정</span></div>
-          </div>
+        <div class="card q4-card card-highlight">
+          <span class="q4-tag q4-tag-key">질문 3 · 핵심</span>
+          <h3>언제는 예외인가?</h3>
+          <span class="q4-sub">예외 조건 알려주기</span>
+          <div class="q4-voice"><small>현장의 말</small><span>"정비 끝난 직후에는 원래 좀 뜨거워."</span></div>
+          <div class="q4-arrow">▼</div>
+          <div class="q4-rule"><small>AI에게 알려줄 기준</small><span>정비 직후의 일시적인 온도 상승은 <strong>이상으로 보지 않는다</strong></span></div>
         </div>
-
-        <div class="card">
-          <span style="color: var(--brand-cyan); font-weight: 800; font-size: 18px;">질문 4</span>
-          <h3 style="margin-top: 6px; font-size: 23px;">판단 후 무엇을 하는가?</h3>
-          <p style="font-size: 18px;">라인 즉시 정지, 윤활유 보충, 다음 조 인수인계 등 표준 행동 매핑.</p>
-          <div class="media-box" style="min-height: 110px; margin-top: 10px;">
-            <img src="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=500&q=80" alt="엔지니어의 기계 정비 조치" onerror="this.onerror=null; this.src='https://placehold.co/500x300/0a1526/00e5ff?text=Standard+Action';">
-            <div class="media-caption"><span>구체적 조치 행동</span></div>
-          </div>
+        <div class="card q4-card">
+          <span class="q4-tag">질문 4</span>
+          <h3>그다음 무엇을 하는가?</h3>
+          <span class="q4-sub">조치 기준 정하기</span>
+          <div class="q4-voice"><small>현장의 말</small><span>"이 정도면 라인 세우고 베어링부터 봐."</span></div>
+          <div class="q4-arrow">▼</div>
+          <div class="q4-rule"><small>AI에게 알려줄 기준</small><span>경고 단계별로 <strong>점검 요청 → 라인 정지 → 다음 조 인계</strong></span></div>
         </div>
       </div>
+      <div class="q4-takeaway">네 질문에 답할 수 있는 사람은 장비를 가장 오래 본 <strong>현장 책임자</strong>입니다. AI는 그 답을 받아 24시간 대신 지켜볼 뿐입니다.</div>
     </section>
 
-    <!-- Slide 19: 패들렛 인터랙티브 보드 (삭제 기능 및 실시간 하트 반영) -->
+    <!-- Slide 19: 포스트잇 아이디어 보드 (QR 실시간 수집) -->
     <section class="slide-page" data-mod="3">
-      <div class="slide-eyebrow">MODULE 4 · PADLET WORKSHOP</div>
+      <div class="slide-eyebrow">MODULE 4 · FIELD IDEA BOARD</div>
       <h2 class="slide-title">우리 조에서 <em>AI로 가장 덜어내고 싶은 일</em>은?</h2>
-      <div class="padlet-wrap">
-        <div class="padlet-form">
-          <input type="text" class="padlet-input" id="padletInput" placeholder="예: 교대 일지 중복 작성, 공구 위치 찾기, 외국인 소통 (입력 후 등록 클릭)" onkeypress="handlePadletEnter(event)">
-            <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 19px; padding: 12px 20px;" onclick="addPadletCard()">의견 등록하기</button>
-            <button type="button" class="btn-action" style="white-space: nowrap;" onclick="resetPadletHearts()" title="모든 의견의 하트 수를 0으로 초기화">하트 초기화</button>
-        </div>
-        <div class="padlet-board" id="padletBoard">
-          <div class="padlet-card" id="card-default-1">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-              <p style="margin: 0;">"매일 교대할 때마다 동일한 안전 수칙이랑 작업 주의사항 손으로 적는 게 제일 번거롭습니다."</p>
-              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-1')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 22px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
-            </div>
-            <small><span>1조 반장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 14</button></small>
+      <div class="idea-wrap">
+        <div class="idea-bar">
+          <div class="idea-qr" id="ideaQr" onclick="openIdeaQrModal()" title="클릭하면 QR을 크게 보여줍니다"></div>
+          <div class="idea-bar-info">
+            <span class="scan-msg">📱 휴대폰으로 QR을 찍고, 덜어내고 싶은 일을 적어 주세요</span>
+            <span class="poll-live-status" id="ideaStatusText">● 연결 준비 중</span>
           </div>
-          <div class="padlet-card highlight-blue" id="card-default-2">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-              <p style="margin: 0;">"갑자기 설비 에러코드 떴을 때 두꺼운 책자 뒤적거리지 않고 스마트폰으로 바로 원인 보고 싶네요."</p>
-              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-2')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 22px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
-            </div>
-            <small><span>3조 직장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 21</button></small>
-          </div>
-          <div class="padlet-card highlight-green" id="card-default-3">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-              <p style="margin: 0;">"신규 외국인 근로자들에게 복잡한 도면 치수 설명할 때 3D로 쉽게 보여주는 도구가 필요합니다."</p>
-              <button class="padlet-del-btn" onclick="deletePadletCard('card-default-3')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 22px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
-            </div>
-            <small><span>5조 반장님</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 18</button></small>
+          <div class="idea-actions">
+            <span class="idea-count" id="ideaCountText">등록 0건</span>
+            <button class="btn-action" onclick="openIdeaQrModal()">QR 크게</button>
+            <button class="btn-action" onclick="refreshIdeas()">새로고침</button>
           </div>
         </div>
+        <div class="idea-form">
+          <input type="text" class="padlet-input" id="padletInput" placeholder="강사 대신 입력 : 현장에서 나온 의견을 적고 Enter (또는 붙이기 버튼)" onkeypress="handlePadletEnter(event)">
+          <button class="btn-action" style="background: var(--brand-orange); border: none; font-size: 19px; padding: 12px 20px; white-space: nowrap;" onclick="addPadletCard()">보드에 붙이기</button>
+        </div>
+        <div class="idea-board" id="ideaBoard"></div>
+        <p class="idea-empty" id="ideaEmpty">아직 등록된 의견이 없습니다. QR을 찍어 첫 의견을 남겨 주세요.</p>
       </div>
     </section>
 
@@ -1317,7 +1429,7 @@
           <p style="font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #fff;">"이걸로 우리 조의 어떤 수고와 피로를 줄이려는 건가?"</p>
           <div class="media-box" style="min-height: 160px;">
             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="현장 엔지니어 및 팀원과의 심층 소통" onerror="this.onerror=null; this.src='https://placehold.co/800x400/0a1526/00e5ff?text=Team+Dialogue';">
-            <div class="media-caption"><span>기술보다 선행되어야 할 팀원의 실질적 피로 경감 목적</span></div>
+            <div class="media-caption"><span>기술보다 먼저, 팀원의 피로를 덜어 주는 목적인지 확인</span></div>
           </div>
           <p style="margin-top: 12px; font-size: 20px;">기술 자체가 멋있어서 쓰는 것이 아니라, 현장 동료의 작업 피로를 실질적으로 덜어주는 목적이 있는지 확인합니다.</p>
         </div>
@@ -1395,6 +1507,27 @@
         <button style="background: transparent; border: none; color: #94a3b8; font-size: 24px; cursor: pointer;" onclick="toggleModal()">&times;</button>
       </div>
       <div class="toc-grid" id="tocGrid"></div>
+    </div>
+  </div>
+
+  <!-- 10초 챌린지 크게 보기 -->
+  <div class="challenge-overlay" id="challengeOverlay" onclick="if (event.target.id === 'challengeOverlay') closeChallengePopup()">
+    <div class="challenge-box">
+      <div class="challenge-head">
+        <span class="slide-eyebrow" style="margin: 0;">MODULE 2 · OBSERVATION GAME</span>
+        <h2>10초 챌린지 : <em>다른 부품 번호 하나를 찾아보세요</em></h2>
+      </div>
+      <div id="challengeSlot"></div>
+    </div>
+  </div>
+
+  <!-- 아이디어 QR 크게 보기 -->
+  <div class="modal-overlay" id="ideaQrModalOverlay" onclick="if (event.target.id === 'ideaQrModalOverlay') closeIdeaQrModal()">
+    <div class="modal-box qr-modal-box">
+      <h2 style="font-size: 26px; color: #fff; font-weight: 900;">QR을 찍고 의견을 적어 주세요</h2>
+      <div class="qr-big" id="ideaQrBig"></div>
+      <p class="qr-url" id="ideaQrUrlText"></p>
+      <button class="btn-action" style="font-size: 16px;" onclick="closeIdeaQrModal()">닫기 (Esc)</button>
     </div>
   </div>
 
@@ -1498,12 +1631,15 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       buildTOC();
       enableVideoBoxes();
       renderQrCodes();
+      renderIdeaQr();
       renderPoll();
+      renderIdeas();
       updateSlideView();
     }
 
     function updateSlideView() {
       if (vtState) closeVideoTheater();
+      closeChallengePopup();
       slides.forEach((s, idx) => s.classList.toggle('active', idx === currentIndex));
       document.getElementById('currentSlideNum').textContent = String(currentIndex + 1).padStart(2, '0');
       document.getElementById('progressBar').style.width = ((currentIndex + 1) / totalSlides * 100) + '%';
@@ -1515,6 +1651,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
         tab.classList.toggle('active', tab.dataset.mod === currentMod);
       });
       syncPollTimer();
+      syncIdeaTimer();
     }
 
     function nextSlide() {
@@ -1851,7 +1988,27 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       fireToast(`[${choice}] 선택 - 해설이 공개되었습니다.`);
     }
 
+    function revealFactCheck() {
+      document.getElementById('factCheck').classList.add('revealed');
+      document.getElementById('factCheckResult').classList.add('show');
+      fireToast('AI 요약이 원본과 다른 곳 2군데를 표시했습니다.');
+    }
+
+    function openChallengePopup() {
+      const game = document.getElementById('challengeGame');
+      document.getElementById('challengeSlot').appendChild(game);
+      document.getElementById('challengeOverlay').classList.add('active');
+    }
+    function closeChallengePopup() {
+      const overlay = document.getElementById('challengeOverlay');
+      if (!overlay.classList.contains('active')) return;
+      overlay.classList.remove('active');
+      document.getElementById('challengeHome').appendChild(document.getElementById('challengeGame'));
+    }
+    function isChallengeOpen() { return document.getElementById('challengeOverlay').classList.contains('active'); }
+
     function startChallengeTimer() {
+      document.getElementById('oddChip').classList.remove('found');
       clearInterval(timerInterval);
       let sec = 10;
       const el = document.getElementById('timerDigit');
@@ -1928,72 +2085,169 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       fireToast('시뮬레이터가 초기화되었습니다.');
     }
 
-    // 19페이지 패들렛 보드 로직 (등록, 삭제, 하트 실시간 증가)
-    let cardCount = 3;
+    // ===== 20페이지 포스트잇 아이디어 보드 (QR 실시간 수집) =====
+    const PIT_COLORS = ['#ffe98a', '#b8f2c4', '#ffc9d4', '#a8d8ff', '#ffd8a8', '#d8c9ff'];
+    let ideaList = [];
+    let ideaTimer = null;
+    let localIdeaSeq = 0;
 
-    function addPadletCard() {
+    function ideaUrl() { return new URL('idea.html', window.location.href).href; }
+
+    function renderIdeaQr() {
+      const svg = qrSvg(ideaUrl());
+      document.getElementById('ideaQr').innerHTML = svg;
+      document.getElementById('ideaQrBig').innerHTML = svg;
+      const note = window.location.protocol === 'file:' ? ' (⚠ 내 PC 파일로 열려 있어 휴대폰에서 접속할 수 없습니다. GitHub Pages 주소로 여세요.)' : '';
+      document.getElementById('ideaQrUrlText').textContent = ideaUrl() + note;
+    }
+    function openIdeaQrModal() { document.getElementById('ideaQrModalOverlay').classList.add('active'); }
+    function closeIdeaQrModal() { document.getElementById('ideaQrModalOverlay').classList.remove('active'); }
+
+    function setIdeaStatus(text, kind) {
+      const el = document.getElementById('ideaStatusText');
+      el.textContent = text;
+      el.className = 'poll-live-status' + (kind ? ' ' + kind : '');
+    }
+
+    function pitRotation(id) {
+      let h = 0;
+      for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 1000;
+      return ((h % 9) - 4) * 0.7;
+    }
+
+    function renderIdeas() {
+      const board = document.getElementById('ideaBoard');
+      const empty = document.getElementById('ideaEmpty');
+      if (!board) return;
+      document.getElementById('ideaCountText').textContent = `등록 ${ideaList.length}건`;
+      empty.classList.toggle('hide', ideaList.length > 0);
+
+      const seen = new Set();
+      ideaList.forEach((idea, idx) => {
+        seen.add(idea.id);
+        let el = board.querySelector(`[data-id="${idea.id}"]`);
+        if (!el) {
+          const rot = pitRotation(idea.id);
+          el = document.createElement('div');
+          el.className = 'pit';
+          el.dataset.id = idea.id;
+          el.style.setProperty('--rot', rot + 'deg');
+          el.style.background = PIT_COLORS[Math.abs(Math.round(rot * 10)) % PIT_COLORS.length];
+          el.innerHTML = `
+            <button class="pit-del" title="이 의견 지우기">✕</button>
+            <div class="pit-text"></div>
+            <span class="pit-who"></span>
+            <button class="pit-like" title="공감">❤️ <span class="pit-like-n">0</span></button>`;
+          el.querySelector('.pit-del').onclick = () => removeIdea(idea.id);
+          el.querySelector('.pit-like').onclick = () => likeIdea(idea.id);
+          board.appendChild(el);
+        }
+        el.querySelector('.pit-text').textContent = idea.text;
+        el.querySelector('.pit-who').textContent = idea.who ? idea.who : '익명';
+        el.querySelector('.pit-like-n').textContent = idea.likes || 0;
+        el.style.order = idx;
+      });
+      Array.from(board.children).forEach((el) => { if (!seen.has(el.dataset.id)) el.remove(); });
+    }
+
+    function applyIdeaResponse(data) {
+      if (!data || !data.ok || !Array.isArray(data.ideas)) return false;
+      ideaList = data.ideas;
+      renderIdeas();
+      return true;
+    }
+
+    async function fetchIdeas(toastOnFail) {
+      const api = pollApi();
+      if (!api) { setIdeaStatus('● 로컬 모드 (강사 입력만 반영 · [투표 설정]에서 서버 연결)', ''); return false; }
+      try {
+        const res = await fetch(`${api}?action=ideas&t=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!applyIdeaResponse(data)) throw new Error(data.error || 'error');
+        const d = new Date();
+        const t = [d.getHours(), d.getMinutes(), d.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+        setIdeaStatus(`● 실시간 수집 중 · ${t} 갱신`, 'live');
+        return true;
+      } catch (e) {
+        setIdeaStatus('⚠ 서버 연결 끊김 — 재시도 중 (강사 입력은 계속 가능)', 'warn');
+        if (toastOnFail) fireToast('의견 서버에 연결하지 못했습니다.');
+        return false;
+      }
+    }
+
+    function refreshIdeas() { fetchIdeas(true); }
+
+    function isIdeaSlideActive() { return !!slides[currentIndex].querySelector('#ideaBoard'); }
+    function syncIdeaTimer() {
+      const shouldRun = isIdeaSlideActive() && !!pollApi();
+      if (shouldRun && !ideaTimer) {
+        fetchIdeas(false);
+        ideaTimer = setInterval(() => fetchIdeas(false), Math.max(2000, Number(PCFG.REFRESH_MS) || 2500));
+      } else if (!shouldRun && ideaTimer) {
+        clearInterval(ideaTimer);
+        ideaTimer = null;
+      }
+    }
+
+    async function addPadletCard() {
       const input = document.getElementById('padletInput');
       const val = input.value.trim();
-      if (!val) { fireToast('내용을 입력해주세요.'); return; }
-      
-      cardCount++;
-      const cardId = `card-dynamic-${cardCount}`;
-      const board = document.getElementById('padletBoard');
-      const card = document.createElement('div');
-      card.className = 'padlet-card highlight-blue';
-      card.id = cardId;
-      card.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-          <p style="margin: 0;">"${val}"</p>
-          <button class="padlet-del-btn" onclick="deletePadletCard('${cardId}')" title="의견 삭제" style="background: transparent; border: none; color: #94a3b8; font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px;">✕</button>
-        </div>
-        <small><span>방금 등록된 의견</span><button class="padlet-heart" onclick="likeCard(this)">❤️ 1</button></small>
-      `;
-      board.prepend(card);
+      if (val.length < 2) { fireToast('내용을 입력해주세요.'); return; }
       input.value = '';
-      fireToast('패들렛 보드에 의견이 등록되었습니다.');
+      const api = pollApi();
+      if (!api) {
+        localIdeaSeq += 1;
+        ideaList.unshift({ id: 'local-' + localIdeaSeq, text: val, who: '강사 입력', likes: 0 });
+        renderIdeas();
+        fireToast('보드에 붙였습니다. (로컬 모드)');
+        return;
+      }
+      try {
+        const res = await fetch(`${api}?action=idea&text=${encodeURIComponent(val)}&who=${encodeURIComponent('강사 입력')}&cid=presenter&t=${Date.now()}`, { cache: 'no-store' });
+        if (!applyIdeaResponse(await res.json())) throw new Error('error');
+        fireToast('보드에 붙였습니다.');
+      } catch (e) {
+        fireToast('등록에 실패했습니다. 연결을 확인하세요.');
+      }
     }
 
     function handlePadletEnter(e) { if (e.key === 'Enter') addPadletCard(); }
 
-    function deletePadletCard(cardId) {
-      const cardEl = document.getElementById(cardId);
-      if (cardEl) {
-        cardEl.style.transition = 'opacity 0.2s, transform 0.2s';
-        cardEl.style.opacity = '0';
-        cardEl.style.transform = 'scale(0.9)';
-        setTimeout(() => {
-          cardEl.remove();
-          fireToast('의견이 삭제되었습니다.');
-        }, 200);
+    async function likeIdea(id) {
+      const item = ideaList.find((i) => i.id === id);
+      if (item) { item.likes = (item.likes || 0) + 1; renderIdeas(); }
+      const api = pollApi();
+      if (!api || String(id).startsWith('local-')) return;
+      try {
+        const res = await fetch(`${api}?action=like&id=${encodeURIComponent(id)}&cid=presenter&t=${Date.now()}`, { cache: 'no-store' });
+        applyIdeaResponse(await res.json());
+      } catch (e) { /* 다음 갱신 때 서버 값으로 맞춰집니다 */ }
+    }
+
+    async function removeIdea(id) {
+      ideaList = ideaList.filter((i) => i.id !== id);
+      renderIdeas();
+      const api = pollApi();
+      if (!api || String(id).startsWith('local-')) { fireToast('의견을 지웠습니다.'); return; }
+      try {
+        const res = await fetch(`${api}?action=deleteIdea&id=${encodeURIComponent(id)}&key=${encodeURIComponent(PCFG.POLL_ADMIN_KEY || '')}&t=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!applyIdeaResponse(data)) throw new Error(data.error || 'error');
+        fireToast('의견을 지웠습니다.');
+      } catch (e) {
+        fireToast('⚠ 서버에서 지우지 못했습니다. 다음 갱신 때 다시 나타날 수 있습니다.');
       }
-    }
-
-    function resetPadletHearts() {
-      document.querySelectorAll('#padletBoard .padlet-heart').forEach((btn) => {
-        btn.textContent = '❤️ 0';
-        btn.style.transform = 'scale(1)';
-      });
-      fireToast('모든 의견의 하트 수를 0으로 초기화했습니다.');
-    }
-
-    function likeCard(btn) {
-      let count = parseInt(btn.textContent.replace(/[^0-9]/g, '')) || 0;
-      count += 1;
-      btn.textContent = `❤️ ${count}`;
-      btn.style.transform = 'scale(1.2)';
-      btn.style.transition = 'transform 0.15s ease';
-      setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
-      fireToast(`공감했습니다 (현재 ${count}개)`);
     }
 
     window.addEventListener('keydown', (e) => {
       if (vtState) { if (e.key === 'Escape') closeVideoTheater(); return; }
+      if (isChallengeOpen()) { if (e.key === 'Escape') closeChallengePopup(); return; }
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); nextSlide(); }
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
       else if (e.key === 'Escape') {
         closeQrModal();
+        closeIdeaQrModal();
         document.getElementById('slidoModalOverlay').classList.remove('active');
         const modal = document.getElementById('modalOverlay');
         if (modal.classList.contains('active')) toggleModal();

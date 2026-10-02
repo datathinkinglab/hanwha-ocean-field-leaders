@@ -1821,23 +1821,38 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       return ytApiPromise;
     }
 
-    function forceKoreanCaptions(player) {
-      const apply = () => {
-        try {
-          player.loadModule('captions');       // 신규 플레이어
-          player.loadModule('cc');             // 구형 플레이어
-          ['captions', 'cc'].forEach((mod) => {
-            try {
-              player.setOption(mod, 'track', { languageCode: 'ko' });
-              player.setOption(mod, 'translationLanguage', { languageCode: 'ko' });
-              player.setOption(mod, 'reload', true);
-            } catch (e) { /* 해당 모듈이 없으면 무시 */ }
-          });
-        } catch (e) { /* 자막을 못 켜도 재생은 계속됩니다 */ }
-      };
-      apply();
-      setTimeout(apply, 1200);   // 자막 트랙이 늦게 로드되는 영상 대비
-      setTimeout(apply, 3000);
+    const KO_LANG = { languageCode: 'ko', languageName: '한국어' };
+
+    // 1) 한국어 자막 트랙이 있으면 그것을, 2) 없으면 원어 자막을 한국어로 자동 번역해 띄웁니다.
+    async function forceKoreanCaptions(player) {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const safe = (fn) => { try { return fn(); } catch (e) { return null; } };
+
+      safe(() => player.loadModule('captions'));
+      safe(() => player.loadModule('cc'));
+      await wait(700);
+
+      safe(() => player.setOption('captions', 'track', { languageCode: 'ko' }));
+      await wait(1200);
+
+      let track = safe(() => player.getOption('captions', 'track')) || {};
+      if (track && track.languageCode) return true;          // 한국어 자막 보유 영상
+
+      // 자동 번역 경로
+      const list = safe(() => player.getOption('captions', 'tracklist')) || [];
+      const base = (list[0] && list[0].languageCode) || 'en';
+      safe(() => player.setOption('captions', 'translationLanguage', KO_LANG));
+      safe(() => player.setOption('captions', 'track', { languageCode: base, kind: 'asr', translationLanguage: KO_LANG }));
+      await wait(1200);
+      track = safe(() => player.getOption('captions', 'track')) || {};
+      if (!track || !track.languageCode) {
+        safe(() => player.setOption('captions', 'track', { languageCode: base, translationLanguage: KO_LANG }));
+      }
+      return true;
+    }
+
+    function scheduleKoreanCaptions(player) {
+      [0, 2500, 6000].forEach((delay) => setTimeout(() => { if (vtState) forceKoreanCaptions(player); }, delay));
     }
 
     function attachKoreanCaptions(iframe) {
@@ -1845,8 +1860,8 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
         if (!vtState || !document.body.contains(iframe)) return;
         const player = new YT.Player(iframe, {
           events: {
-            onReady: () => forceKoreanCaptions(player),
-            onStateChange: (ev) => { if (ev.data === YT.PlayerState.PLAYING) forceKoreanCaptions(player); }
+            onReady: () => scheduleKoreanCaptions(player),
+            onStateChange: (ev) => { if (ev.data === YT.PlayerState.PLAYING) scheduleKoreanCaptions(player); }
           }
         });
         if (vtState) vtState.player = player;

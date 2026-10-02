@@ -1785,7 +1785,8 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 
       const isLocal = window.location.protocol === 'file:';
       const originParam = isLocal ? '' : `&origin=${encodeURIComponent(window.location.origin)}`;
-      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${originParam}`;
+      // hl/cc_lang_pref/cc_load_policy : 자막을 한국어로, 기본 켜짐 상태로 요청
+      const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&enablejsapi=1&hl=ko&cc_lang_pref=ko&cc_load_policy=1${originParam}`;
 
       vtState = { container, loadTimer: null };
       vtState.loadTimer = setTimeout(() => {
@@ -1798,13 +1799,65 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
         iframe.onload = () => iframe.classList.add('ready');
         stage.appendChild(iframe);
         setTimeout(() => iframe.classList.add('ready'), 1200);
+        attachKoreanCaptions(iframe);
       }, 520);
+    }
+
+    // ===== 유튜브 자막을 한국어(자동 번역 포함)로 고정 =====
+    let ytApiPromise = null;
+
+    function loadYouTubeApi() {
+      if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
+      if (ytApiPromise) return ytApiPromise;
+      ytApiPromise = new Promise((resolve, reject) => {
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); resolve(window.YT); };
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.onerror = () => reject(new Error('iframe api load failed'));
+        document.head.appendChild(tag);
+        setTimeout(() => reject(new Error('iframe api timeout')), 8000);
+      }).catch((e) => { ytApiPromise = null; throw e; });
+      return ytApiPromise;
+    }
+
+    function forceKoreanCaptions(player) {
+      const apply = () => {
+        try {
+          player.loadModule('captions');       // 신규 플레이어
+          player.loadModule('cc');             // 구형 플레이어
+          ['captions', 'cc'].forEach((mod) => {
+            try {
+              player.setOption(mod, 'track', { languageCode: 'ko' });
+              player.setOption(mod, 'translationLanguage', { languageCode: 'ko' });
+              player.setOption(mod, 'reload', true);
+            } catch (e) { /* 해당 모듈이 없으면 무시 */ }
+          });
+        } catch (e) { /* 자막을 못 켜도 재생은 계속됩니다 */ }
+      };
+      apply();
+      setTimeout(apply, 1200);   // 자막 트랙이 늦게 로드되는 영상 대비
+      setTimeout(apply, 3000);
+    }
+
+    function attachKoreanCaptions(iframe) {
+      loadYouTubeApi().then((YT) => {
+        if (!vtState || !document.body.contains(iframe)) return;
+        const player = new YT.Player(iframe, {
+          events: {
+            onReady: () => forceKoreanCaptions(player),
+            onStateChange: (ev) => { if (ev.data === YT.PlayerState.PLAYING) forceKoreanCaptions(player); }
+          }
+        });
+        if (vtState) vtState.player = player;
+      }).catch(() => { /* API 로드 실패 시 URL 파라미터 설정만 적용됩니다 */ });
     }
 
     function closeVideoTheater() {
       if (!vtState) return;
-      const { container, loadTimer } = vtState;
+      const { container, loadTimer, player } = vtState;
       clearTimeout(loadTimer);
+      if (player && typeof player.destroy === 'function') { try { player.destroy(); } catch (e) {} }
       const theater = document.getElementById('videoTheater');
       const stage = document.getElementById('vtStage');
       const iframe = stage.querySelector('iframe');

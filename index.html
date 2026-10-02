@@ -1823,36 +1823,33 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 
     const KO_LANG = { languageCode: 'ko', languageName: '한국어' };
 
-    // 1) 한국어 자막 트랙이 있으면 그것을, 2) 없으면 원어 자막을 한국어로 자동 번역해 띄웁니다.
+    // 이미 한국어 자막이 선택돼 있으면 그대로 두고, 아니면 원어 자막을 한국어로 자동 번역해 띄웁니다.
+    // (한국어 트랙을 먼저 '요청'하면 트랙이 없는 영상에서 자막이 꺼져 버리므로 시도하지 않습니다.)
     async function forceKoreanCaptions(player) {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const safe = (fn) => { try { return fn(); } catch (e) { return null; } };
 
       safe(() => player.loadModule('captions'));
-      safe(() => player.loadModule('cc'));
-      await wait(700);
+      await wait(400);
 
-      safe(() => player.setOption('captions', 'track', { languageCode: 'ko' }));
-      await wait(1200);
+      const current = safe(() => player.getOption('captions', 'track')) || {};
+      if (current.languageCode === 'ko') return 'ko';      // 한국어 자막 보유 영상
 
-      let track = safe(() => player.getOption('captions', 'track')) || {};
-      if (track && track.languageCode) return true;          // 한국어 자막 보유 영상
-
-      // 자동 번역 경로
       const list = safe(() => player.getOption('captions', 'tracklist')) || [];
       const base = (list[0] && list[0].languageCode) || 'en';
       safe(() => player.setOption('captions', 'translationLanguage', KO_LANG));
       safe(() => player.setOption('captions', 'track', { languageCode: base, kind: 'asr', translationLanguage: KO_LANG }));
       await wait(1200);
-      track = safe(() => player.getOption('captions', 'track')) || {};
-      if (!track || !track.languageCode) {
+
+      const after = safe(() => player.getOption('captions', 'track')) || {};
+      if (!after.languageCode) {
         safe(() => player.setOption('captions', 'track', { languageCode: base, translationLanguage: KO_LANG }));
       }
-      return true;
+      return 'translated';
     }
 
     function scheduleKoreanCaptions(player) {
-      [0, 2500, 6000].forEach((delay) => setTimeout(() => { if (vtState) forceKoreanCaptions(player); }, delay));
+      [300, 3000, 7000].forEach((delay) => setTimeout(() => { if (vtState) forceKoreanCaptions(player); }, delay));
     }
 
     function attachKoreanCaptions(iframe) {

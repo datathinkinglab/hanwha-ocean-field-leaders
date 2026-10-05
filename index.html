@@ -542,42 +542,6 @@
       .q4-takeaway { font-size: 17px; margin-top: 10px; padding: 10px 16px; }
     }
 
-    /* 16페이지 교대 메모 팩트체크 */
-    .fc-lead { font-size: clamp(18px, 2.1vh, 23px); color: var(--text-sub); margin: -6px 0 1.6vh; word-break: keep-all; }
-    .fc-lead strong { color: #fff; }
-    .fc-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; flex: 1; min-height: 0; }
-    .fc-card { gap: 1.2vh; }
-    .fc-step { font-size: clamp(16px, 1.9vh, 21px); font-weight: 800; color: var(--brand-cyan); }
-    .fc-step-ai { color: #fca5a5; }
-    .fc-memo { list-style: none; display: flex; flex-direction: column; justify-content: center; gap: 1.6vh; flex: 1; }
-    .fc-memo li { font-size: clamp(17px, 2.3vh, 25px); line-height: 1.45; color: var(--text-sub); padding: 1vh 14px; border-radius: 8px; background: rgba(0,0,0,0.3); word-break: keep-all; }
-    .fc-memo b { color: var(--brand-cyan); margin-right: 10px; font-variant-numeric: tabular-nums; }
-    .fc-summary { font-size: clamp(19px, 2.8vh, 31px) !important; line-height: 1.6 !important; color: #fff !important; font-weight: 600 !important; flex: 1; word-break: keep-all;
-      display: flex; align-items: center;
-      background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 2vh 20px; }
-    .fc-summary > span { display: block; }
-    .fc-ai { border-color: rgba(239, 68, 68, 0.45); }
-    .fc-arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-muted); font-size: 15px; font-weight: 800; }
-    .fc-arrow span { font-size: 36px; line-height: 1; color: var(--brand-orange); }
-    #factCheck mark { background: transparent; color: inherit; border-radius: 4px; padding: 0 2px; transition: background 0.3s, color 0.3s; }
-    #factCheck.revealed .fc-key mark { background: rgba(0, 229, 255, 0.25); color: #fff; }
-    #factCheck.revealed .fc-summary mark { background: rgba(239, 68, 68, 0.45); color: #fff; text-decoration: line-through; text-decoration-thickness: 2px; }
-    #factCheck.revealed .fc-key { box-shadow: inset 4px 0 0 var(--brand-cyan); }
-    .fc-btn { align-self: flex-start; background: var(--danger) !important; border: none !important; font-size: 17px !important; padding: 10px 18px !important; }
-    #factCheck.revealed .fc-btn { display: none; }
-    .fc-result { display: none; margin-top: 1.6vh; grid-template-columns: 1.25fr 1fr; gap: 14px; align-items: stretch; }
-    .fc-result.show { display: grid; animation: fcIn 0.35s ease; }
-    @keyframes fcIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-    .fc-diffs { display: flex; flex-direction: column; gap: 10px; }
-    .fc-diff { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1vh 18px; font-size: clamp(16px, 2.1vh, 23px); color: var(--text-sub); }
-    .fc-diff small { display: block; font-size: 13px; font-weight: 800; color: var(--text-muted); }
-    .fc-diff strong { color: #fff; }
-    .fc-vs { font-size: 30px; font-weight: 900; color: var(--danger); }
-    .fc-takeaway { margin: 0; padding: 1.4vh 20px; border-radius: 10px; font-size: clamp(16px, 2.1vh, 23px); line-height: 1.55; color: var(--text-sub); background: rgba(255, 107, 53, 0.12); border-left: 5px solid var(--brand-orange); word-break: keep-all; display: flex; align-items: center; }
-    .fc-takeaway > span { display: block; }
-    .fc-takeaway strong { color: #fff; }
-    @media print { .fc-result { display: grid !important; } }
-
     /* 20페이지 포스트잇 아이디어 보드 */
     .idea-wrap { flex: 1; display: flex; flex-direction: column; gap: 1.4vh; min-height: 0; }
     .idea-bar { display: flex; align-items: center; gap: 16px; padding: 10px 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; }
@@ -616,6 +580,52 @@
       .idea-bar { padding: 8px 12px; gap: 12px; }
       .pit { font-size: 17px; min-height: 112px; padding: 12px 12px 36px; }
       .idea-board { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    }
+
+    /* 16페이지 교대 메모 실습 */
+    .lab-wrap { flex: 1; display: flex; flex-direction: column; gap: 1.2vh; min-height: 0; }
+    .lab-bar { display: flex; align-items: center; gap: 16px; padding: 10px 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; }
+    .lab-qr { flex-shrink: 0; width: 86px; height: 86px; background: #fff; border-radius: 8px; padding: 5px; cursor: zoom-in; box-shadow: 0 0 0 2px rgba(0,229,255,0.5); }
+    .lab-qr svg { width: 100%; height: 100%; display: block; }
+    .lab-bar-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .lab-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; grid-template-rows: minmax(0, 1fr); gap: 16px; flex: 1; min-height: 0; }
+    .lab-list-card, .lab-result-card { gap: 10px; min-height: 0; overflow: hidden; }
+    .lab-step { font-size: 17px; font-weight: 800; color: var(--brand-cyan); }
+    .lab-step-ai { color: var(--brand-orange); }
+    .lab-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+    .lab-memo {
+      text-align: left; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-left: 4px solid rgba(255,255,255,0.25);
+      border-radius: 8px; padding: 10px 14px; color: var(--text-sub); font: inherit; font-size: 17px; line-height: 1.45; cursor: pointer;
+      white-space: pre-wrap; word-break: keep-all; transition: border-color 0.15s, background 0.15s;
+    }
+    .lab-memo:hover { background: rgba(255,255,255,0.09); }
+    .lab-memo.selected { border-color: var(--brand-cyan); border-left-color: var(--brand-cyan); background: rgba(0,229,255,0.1); color: #fff; }
+    .lab-memo small { display: block; margin-top: 6px; font-size: 14px; font-weight: 800; color: var(--text-muted); }
+    .lab-memo .done-flag { color: var(--success); }
+    .lab-result-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .slide-page .lab-tidy-btn { background: var(--brand-orange) !important; border: none !important; font-size: 16px !important; padding: 9px 16px !important; }
+    .lab-result { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
+    .lab-summary { font-size: 21px; font-weight: 800; color: #fff; background: rgba(0,229,255,0.1); border-left: 4px solid var(--brand-cyan); border-radius: 8px; padding: 12px 16px; word-break: keep-all; }
+    .lab-block { border-radius: 8px; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+    .lab-block h4 { font-size: 16px; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.02em; }
+    .lab-block.done h4 { color: var(--success); }
+    .lab-block.pending h4 { color: #fbbf24; }
+    .lab-block.check { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.45); }
+    .lab-block.check h4 { color: #fca5a5; }
+    .lab-block.risk { background: rgba(255,107,53,0.12); border-color: rgba(255,107,53,0.45); }
+    .lab-block.risk h4 { color: var(--brand-orange); }
+    .lab-block ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .lab-block li { font-size: 18px; line-height: 1.45; color: var(--text-sub); word-break: keep-all; }
+    .lab-block li::before { content: '· '; color: var(--text-muted); }
+    .lab-empty { font-size: 18px; color: var(--text-muted); text-align: center; padding: 2vh 10px; word-break: keep-all; }
+    .lab-takeaway { padding: 10px 18px; border-radius: 10px; font-size: 18px; color: var(--text-sub); background: rgba(255,107,53,0.12); border-left: 5px solid var(--brand-orange); word-break: keep-all; }
+    .lab-takeaway strong { color: #fff; }
+    @media (max-height: 820px) {
+      .lab-qr { width: 72px; height: 72px; }
+      .lab-memo { font-size: 15px; padding: 8px 12px; }
+      .lab-summary { font-size: 18px; padding: 9px 13px; }
+      .lab-block li { font-size: 16px; }
+      .lab-takeaway { font-size: 15px; padding: 8px 14px; }
     }
 
     /* 영상 확대 재생 (시어터 모드) */
@@ -1254,36 +1264,38 @@
 
     <!-- Slide 15: 할루시네이션(거짓말) 검증 시연 -->
     <section class="slide-page" data-mod="2">
-      <div class="slide-eyebrow">MODULE 3 · FACT CHECKING</div>
-      <h2 class="slide-title">교대 메모 요약 : <em>AI가 그럴듯하게 틀리는 순간</em></h2>
-      <p class="fc-lead">오전 조 메모를 AI에게 <strong>"다음 조 인계용으로 요약해 줘"</strong>라고 맡겼습니다. 무엇이 달라졌을까요?</p>
-      <div class="fc-grid" id="factCheck">
-        <div class="card fc-card">
-          <span class="fc-step">① 현장 원본 메모</span>
-          <ul class="fc-memo">
-            <li><b>09:10</b> 자재 상자 4개 라벨 검수 시작</li>
-            <li><b>10:00</b> 1~3번 상자 검수 완료</li>
-            <li class="fc-key"><b>10:00</b> 4번 상자는 도면 치수가 없어 <mark>확인 보류</mark></li>
-            <li class="fc-key"><b>11:00</b> 4번 상자 여전히 보류 · 다음 조 <mark>확인 담당자 미정</mark></li>
-          </ul>
+      <div class="slide-eyebrow">MODULE 3 · HANDOVER LAB</div>
+      <h2 class="slide-title">직접 해보기 : <em>손으로 적은 교대 메모가 인계표로</em></h2>
+      <div class="lab-wrap">
+        <div class="lab-bar">
+          <div class="lab-qr" id="memoQr" onclick="openMemoQrModal()" title="클릭하면 QR을 크게 보여줍니다"></div>
+          <div class="lab-bar-info">
+            <span class="scan-msg">📱 QR을 찍고 오늘 교대 메모를 평소대로 적어 보내세요</span>
+            <span class="poll-live-status" id="memoStatusText">● 연결 준비 중</span>
+          </div>
+          <div class="idea-actions">
+            <span class="idea-count" id="memoCountText">도착 0건</span>
+            <button class="btn-action" onclick="openMemoQrModal()">QR 크게</button>
+            <button class="btn-action" onclick="clearMemos()">전체 지우기</button>
+          </div>
         </div>
-        <div class="fc-arrow">AI 요약<span>→</span></div>
-        <div class="card fc-card fc-ai">
-          <span class="fc-step fc-step-ai">② AI가 만든 인계 요약</span>
-          <p class="fc-summary"><span>"자재 상자 4개 라벨 검수를 <mark>모두 완료</mark>했습니다. 다음 조는 <mark>추가 확인 없이</mark> 후속 작업을 진행하면 됩니다."</span></p>
-          <button class="btn-action fc-btn" onclick="revealFactCheck()">🔍 틀린 곳 찾기</button>
+        <div class="lab-grid">
+          <div class="card lab-list-card">
+            <span class="lab-step">① 도착한 메모 (클릭해서 선택)</span>
+            <div class="lab-list" id="memoList"></div>
+            <p class="lab-empty" id="memoEmpty">아직 도착한 메모가 없습니다. QR을 찍어 첫 메모를 보내 주세요.</p>
+          </div>
+          <div class="card card-highlight lab-result-card">
+            <div class="lab-result-head">
+              <span class="lab-step lab-step-ai">② AI가 정리한 인계표</span>
+              <button class="btn-action lab-tidy-btn" id="tidyBtn" onclick="tidySelectedMemo()">⚡ AI로 정리하기</button>
+            </div>
+            <div class="lab-result" id="memoResult">
+              <p class="lab-empty">왼쪽에서 메모를 하나 고르고 <strong>[AI로 정리하기]</strong>를 누르세요.</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="fc-result" id="factCheckResult">
-        <div class="fc-diffs">
-        <div class="fc-diff">
-          <div><small>원본</small>4번 상자 <strong>확인 보류</strong></div><div class="fc-vs">≠</div><div><small>AI 요약</small><strong>모두 완료</strong></div>
-        </div>
-        <div class="fc-diff">
-          <div><small>원본</small>다음 조 <strong>담당자 미정</strong></div><div class="fc-vs">≠</div><div><small>AI 요약</small><strong>추가 확인 없이 진행</strong></div>
-        </div>
-        </div>
-        <p class="fc-takeaway"><span>문장이 매끄러울수록 그대로 믿고 싶어집니다. 인계 전에 <strong>'보류·미정' 항목만큼은 원본 메모와 대조</strong>하는 것이 현장 리더의 몫입니다.</span></p>
+        <div class="lab-takeaway">AI는 적어 준 내용을 <strong>양식으로 바꿔 줄 뿐</strong>입니다. <strong>'확인 필요'로 넘어간 항목</strong>을 끝까지 챙기는 것은 현장 책임자의 몫입니다.</div>
       </div>
     </section>
 
@@ -1521,6 +1533,16 @@
     </div>
   </div>
 
+  <!-- 교대 메모 QR 크게 보기 -->
+  <div class="modal-overlay" id="memoQrModalOverlay" onclick="if (event.target.id === 'memoQrModalOverlay') closeMemoQrModal()">
+    <div class="modal-box qr-modal-box">
+      <h2 style="font-size: 26px; color: #fff; font-weight: 900;">QR을 찍고 교대 메모를 적어 주세요</h2>
+      <div class="qr-big" id="memoQrBig"></div>
+      <p class="qr-url" id="memoQrUrlText"></p>
+      <button class="btn-action" style="font-size: 16px;" onclick="closeMemoQrModal()">닫기 (Esc)</button>
+    </div>
+  </div>
+
   <!-- 아이디어 QR 크게 보기 -->
   <div class="modal-overlay" id="ideaQrModalOverlay" onclick="if (event.target.id === 'ideaQrModalOverlay') closeIdeaQrModal()">
     <div class="modal-box qr-modal-box">
@@ -1633,6 +1655,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       enableVideoBoxes();
       renderQrCodes();
       renderIdeaQr();
+      renderMemoQr();
       renderPoll();
       renderIdeas();
       updateSlideView();
@@ -1653,6 +1676,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       });
       syncPollTimer();
       syncIdeaTimer();
+      syncMemoTimer();
     }
 
     function nextSlide() {
@@ -1842,11 +1866,23 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       ytSafe(() => player.setOption('captions', 'track', { languageCode: base, kind: 'asr', translationLanguage: KO_LANG }));
     }
 
+    // 재생이 실제로 시작된 뒤에야 자막을 켤 수 있습니다(버퍼링 중에는 무시됩니다).
+    // 그래서 영상이 열려 있는 동안 2초마다 상태를 보고, 재생 중이고 아직 한국어가 아닐 때만 다시 겁니다.
     function scheduleKoreanCaptions(player) {
-      if (player.__koScheduled) return;
-      player.__koScheduled = true;
-      setTimeout(() => { if (vtState) applyKoreanCaptions(player); }, 1500);
-      setTimeout(() => { if (vtState && !captionsAreKorean(player)) applyKoreanCaptions(player); }, 7000);
+      if (player.__koTimer) return;
+      player.__koTries = 0;
+      player.__koTimer = setInterval(() => {
+        if (!vtState || vtState.player !== player) { clearInterval(player.__koTimer); player.__koTimer = null; return; }
+        const state = ytSafe(() => player.getPlayerState());
+        if (state !== 1) return;                                  // 1 = 재생 중
+        if (captionsAreKorean(player)) { clearInterval(player.__koTimer); player.__koTimer = null; return; }
+        const now = Date.now();
+        if (now - (player.__koLast || 0) < 5000) return;           // 전환에 2~4초 걸리므로 간격을 둔다
+        player.__koLast = now;
+        player.__koTries += 1;
+        applyKoreanCaptions(player);
+        if (player.__koTries >= 6) { clearInterval(player.__koTimer); player.__koTimer = null; }
+      }, 2000);
     }
 
     // 강사용 수동 버튼 (자동 적용이 안 될 때)
@@ -1878,6 +1914,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       if (!vtState) return;
       const { container, loadTimer, player } = vtState;
       clearTimeout(loadTimer);
+      if (player && player.__koTimer) { clearInterval(player.__koTimer); player.__koTimer = null; }
       if (player && typeof player.destroy === 'function') { try { player.destroy(); } catch (e) {} }
       const theater = document.getElementById('videoTheater');
       const stage = document.getElementById('vtStage');
@@ -2062,12 +2099,6 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       fireToast(`[${choice}] 선택 - 해설이 공개되었습니다.`);
     }
 
-    function revealFactCheck() {
-      document.getElementById('factCheck').classList.add('revealed');
-      document.getElementById('factCheckResult').classList.add('show');
-      fireToast('AI 요약이 원본과 다른 곳 2군데를 표시했습니다.');
-    }
-
     function openChallengePopup() {
       const game = document.getElementById('challengeGame');
       document.getElementById('challengeSlot').appendChild(game);
@@ -2157,6 +2188,177 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
         btn.innerHTML = `<span>${labels[i - 1]}</span><span style="color: var(--brand-orange); font-weight: 700;">점검 클릭</span>`;
       }
       fireToast('시뮬레이터가 초기화되었습니다.');
+    }
+
+    // ===== 16페이지 교대 메모 실습 (QR 수집 + AI 정리) =====
+    let memoList = [];
+    let memoTimer = null;
+    let selectedMemoId = null;
+
+    function memoUrl() { return new URL('memo.html', window.location.href).href; }
+
+    function renderMemoQr() {
+      const svg = qrSvg(memoUrl());
+      document.getElementById('memoQr').innerHTML = svg;
+      document.getElementById('memoQrBig').innerHTML = svg;
+      const note = window.location.protocol === 'file:' ? ' (⚠ 내 PC 파일로 열려 있어 휴대폰에서 접속할 수 없습니다. GitHub Pages 주소로 여세요.)' : '';
+      document.getElementById('memoQrUrlText').textContent = memoUrl() + note;
+    }
+    function openMemoQrModal() { document.getElementById('memoQrModalOverlay').classList.add('active'); }
+    function closeMemoQrModal() { document.getElementById('memoQrModalOverlay').classList.remove('active'); }
+
+    function setMemoStatus(text, kind) {
+      const el = document.getElementById('memoStatusText');
+      el.textContent = text;
+      el.className = 'poll-live-status' + (kind ? ' ' + kind : '');
+    }
+
+    function renderMemoList() {
+      const box = document.getElementById('memoList');
+      const empty = document.getElementById('memoEmpty');
+      if (!box) return;
+      document.getElementById('memoCountText').textContent = `도착 ${memoList.length}건`;
+      empty.style.display = memoList.length ? 'none' : '';
+
+      const seen = new Set();
+      memoList.forEach((memo, idx) => {
+        seen.add(memo.id);
+        let el = box.querySelector(`[data-id="${memo.id}"]`);
+        if (!el) {
+          el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'lab-memo';
+          el.dataset.id = memo.id;
+          el.onclick = () => selectMemo(memo.id);
+          box.appendChild(el);
+        }
+        const head = memo.text.length > 110 ? memo.text.slice(0, 110) + '…' : memo.text;
+        el.textContent = head;
+        const tag = document.createElement('small');
+        tag.innerHTML = `${memo.who ? memo.who : '익명'}${memo.tidy ? ' <span class="done-flag">· 정리 완료</span>' : ''}`;
+        el.appendChild(tag);
+        el.classList.toggle('selected', memo.id === selectedMemoId);
+        el.style.order = idx;
+      });
+      Array.from(box.children).forEach((el) => { if (el.dataset.id && !seen.has(el.dataset.id)) el.remove(); });
+      if (selectedMemoId && !memoList.some((m) => m.id === selectedMemoId)) { selectedMemoId = null; renderMemoResult(); }
+    }
+
+    function selectedMemo() { return memoList.find((m) => m.id === selectedMemoId) || null; }
+
+    function selectMemo(id) {
+      selectedMemoId = id;
+      renderMemoList();
+      renderMemoResult();
+    }
+
+    function listBlock(cls, title, items) {
+      if (!items || !items.length) return '';
+      const li = items.map((t) => `<li>${escapeHtml(t)}</li>`).join('');
+      return `<div class="lab-block ${cls}"><h4>${title}</h4><ul>${li}</ul></div>`;
+    }
+
+    function escapeHtml(t) {
+      return String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function renderMemoResult(statusHtml) {
+      const box = document.getElementById('memoResult');
+      if (!box) return;
+      if (statusHtml) { box.innerHTML = statusHtml; return; }
+      const memo = selectedMemo();
+      if (!memo) {
+        box.innerHTML = '<p class="lab-empty">왼쪽에서 메모를 하나 고르고 <strong>[AI로 정리하기]</strong>를 누르세요.</p>';
+        return;
+      }
+      if (!memo.tidy) {
+        box.innerHTML = '<p class="lab-empty">이 메모는 아직 정리 전입니다. 위의 <strong>[AI로 정리하기]</strong>를 눌러 주세요.</p>';
+        return;
+      }
+      const t = memo.tidy;
+      box.innerHTML = [
+        t.summary ? `<div class="lab-summary">${escapeHtml(t.summary)}</div>` : '',
+        listBlock('done', '✅ 완료', t.done),
+        listBlock('pending', '⏳ 진행 중 · 보류', t.pending),
+        listBlock('check', '🚨 다음 조가 꼭 확인할 것', t.check),
+        t.risk ? listBlock('risk', '⚠ 안전 주의', [t.risk]) : ''
+      ].join('');
+    }
+
+    function applyMemoResponse(data) {
+      if (!data || !data.ok || !Array.isArray(data.memos)) return false;
+      memoList = data.memos;
+      if (!selectedMemoId && memoList.length) selectedMemoId = memoList[0].id;
+      renderMemoList();
+      renderMemoResult();
+      return true;
+    }
+
+    async function fetchMemos(toastOnFail) {
+      const api = pollApi();
+      if (!api) { setMemoStatus('● 서버 미설정 ([투표 설정]에서 주소를 넣어 주세요)', ''); return false; }
+      try {
+        const res = await fetch(`${api}?action=memos&t=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!applyMemoResponse(data)) throw new Error(data.error || 'error');
+        const d = new Date();
+        const hhmmss = [d.getHours(), d.getMinutes(), d.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+        setMemoStatus(`● 실시간 수집 중 · ${hhmmss} 갱신`, 'live');
+        return true;
+      } catch (e) {
+        setMemoStatus('⚠ 서버 연결 끊김 — 재시도 중', 'warn');
+        if (toastOnFail) fireToast('메모 서버에 연결하지 못했습니다.');
+        return false;
+      }
+    }
+
+    function isMemoSlideActive() { return !!slides[currentIndex].querySelector('#memoList'); }
+    function syncMemoTimer() {
+      const shouldRun = isMemoSlideActive() && !!pollApi();
+      if (shouldRun && !memoTimer) {
+        fetchMemos(false);
+        memoTimer = setInterval(() => fetchMemos(false), Math.max(2000, Number(PCFG.REFRESH_MS) || 2500));
+      } else if (!shouldRun && memoTimer) {
+        clearInterval(memoTimer);
+        memoTimer = null;
+      }
+    }
+
+    async function tidySelectedMemo() {
+      const memo = selectedMemo();
+      if (!memo) { fireToast('먼저 왼쪽에서 메모를 선택해 주세요.'); return; }
+      const api = pollApi();
+      if (!api) { fireToast('투표 설정에서 서버 주소를 먼저 넣어 주세요.'); return; }
+      const btn = document.getElementById('tidyBtn');
+      btn.disabled = true;
+      renderMemoResult('<p class="lab-empty">AI가 인계표로 정리하는 중입니다… (3~10초)</p>');
+      try {
+        const res = await fetch(`${api}?action=tidy&id=${encodeURIComponent(memo.id)}&t=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'error');
+        applyMemoResponse(data);
+        renderMemoResult();
+        fireToast(data.cached ? '이미 정리된 결과를 불러왔습니다.' : '인계표로 정리했습니다.');
+      } catch (e) {
+        renderMemoResult(`<p class="lab-empty">정리에 실패했습니다. (${escapeHtml(e.message || '오류')})<br>Apps Script의 Gemini API 키와 네트워크를 확인해 주세요.</p>`);
+      }
+      btn.disabled = false;
+    }
+
+    async function clearMemos() {
+      const api = pollApi();
+      if (!api) { memoList = []; selectedMemoId = null; renderMemoList(); renderMemoResult(); return; }
+      try {
+        const res = await fetch(`${api}?action=clearMemos&key=${encodeURIComponent(PCFG.POLL_ADMIN_KEY || '')}&t=${Date.now()}`, { cache: 'no-store' });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'error');
+        selectedMemoId = null;
+        applyMemoResponse(data);
+        renderMemoResult();
+        fireToast('교대 메모를 모두 지웠습니다.');
+      } catch (e) {
+        fireToast('⚠ 삭제에 실패했습니다. 비밀번호와 연결을 확인하세요.');
+      }
     }
 
     // ===== 20페이지 포스트잇 아이디어 보드 (QR 실시간 수집) =====
@@ -2322,6 +2524,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
       else if (e.key === 'Escape') {
         closeQrModal();
         closeIdeaQrModal();
+        closeMemoQrModal();
         document.getElementById('slidoModalOverlay').classList.remove('active');
         const modal = document.getElementById('modalOverlay');
         if (modal.classList.contains('active')) toggleModal();
